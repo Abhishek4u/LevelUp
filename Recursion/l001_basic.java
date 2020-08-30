@@ -177,7 +177,6 @@ public class l001_basic {
 
             if(!vis[ques.charAt(i) - 'A']) {
                 
-                System.out.println(ques.charAt(i));
                 count += allPermutation_withoutDuplicates(str,ans + ques.charAt(i));
 
                 vis[ques.charAt(i) - 'A'] = true;
