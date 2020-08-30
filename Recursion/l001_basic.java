@@ -13,18 +13,18 @@ public class l001_basic {
         
         int sr = 0,sc = 0,er = 2,ec = 2;
 
-        // System.out.println(mazePath(sr, sc, er, ec, ""));
+        System.out.println(mazePath(sr, sc, er, ec, ""));
         // System.out.println(mazePathMulti(sr, sc, er, ec, ""));
         
         // floodFill();
 
-        // System.out.println(allPermutation("ABBA",""));
+        // System.out.println(allPermutation("ABAB",""));
 
-        // System.out.println(allPermutation_withoutDuplicates("ABBA", ""));
+        // System.out.println(allPermutation_withoutDuplicates("ABAB", ""));
 
-        List<String> ans = letterCombination_set2("10");
+        // List<String> ans = letterCombination_set2("10");
 
-        System.out.println(ans);
+        // System.out.println(ans);
     }
 
     public static int mazePath(int sr,int sc,int er,int ec, String ans ) {
@@ -177,7 +177,7 @@ public class l001_basic {
 
             if(!vis[ques.charAt(i) - 'A']) {
                 
-                
+                System.out.println(ques.charAt(i));
                 count += allPermutation_withoutDuplicates(str,ans + ques.charAt(i));
 
                 vis[ques.charAt(i) - 'A'] = true;
@@ -221,13 +221,13 @@ public class l001_basic {
     }
 
 
-    public static List<String> letterCombination_set2(String digits) {
+    public static  List<String> letterCombination_set2(String digits) {
 
         if(digits.length() == 0) return new ArrayList<String>();
 
         String[] codes = {".,/?", "@#$%", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz","*+-","&^!~"};
 
-        List<String> ans = new ArrayList ();
+        List<String> ans = new ArrayList <String> ();
 
         letterCombination_set2_(digits,0,codes,ans,"");
 
