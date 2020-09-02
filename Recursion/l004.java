@@ -73,7 +73,7 @@ public class l004 {
         // 4. Recursion call ( 1 to 9 numbers chances giving)
         // 5. Base case checking that first character should not be mapped to 0 value
 
-    // Here we have to make single string of unique characters and then in recursion give every character 
+    // Here we have to make single string(send,money,more ==> sendmonyr) of unique characters and then in recursion give every character 
     // chance to get value from 0 to 9 and in base case check whether it fits to (a + b = c) string or not
     // if not then backtrack
 

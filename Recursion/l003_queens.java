@@ -264,13 +264,106 @@ public class l003_queens {
 
     }
 
+    // ----------------------------------------SEE BITMASKING FILE FIRST----------------------------------
+
+    static boolean[] rowsQ; // rows queens
+    static boolean[] colsQ; // columns
+    static boolean[] diagQ; // diagonal
+    static boolean[] AdiagQ; // anti-diagonal
+
+    public static int nQueenCombination_usingBooleanArray(int n, int idx, int tnq, String ans) {
+
+        if (tnq == 0) {
+            System.out.println(ans);
+            return 1;
+        }
+
+        int count = 0;
+        int m = n; // no of columns
+
+        for (int i = idx; i < n * m; i++) {
+
+            int r = i / m;
+            int c = i % m;
+
+            if (!rowsQ[r] && !colsQ[c] && !diagQ[r + c] && !AdiagQ[r - c + m]) {
+
+                rowsQ[r] = true;
+                colsQ[c] = true;
+                diagQ[r + c] = true;
+                AdiagQ[r - c + m] = true;
+
+                count += nQueenCombination_usingBooleanArray(n, i + 1, tnq - 1, ans + "(" + r + ", " + c + ") ");
+
+                rowsQ[r] = false;
+                colsQ[c] = false;
+                diagQ[r + c] = false;
+                AdiagQ[r - c + m] = false;
+            }
+        }
+
+        return count;
+    }
+
+    static int rowsBQ = 0; // rows bits queen
+    static int colsBQ = 0;
+    static int diagBQ = 0;
+    static int AdiagBQ = 0;
+
+    public static int nQueenCombination_usingBits(int n, int idx, int tnq, String ans) {
+
+        if (tnq == 0) {
+            System.out.println(ans);
+            return 1;
+        }
+
+        int count = 0;
+
+        int m = n; // no of columns
+
+        for (int i = idx; i < n * m; i++) {
+
+            int r = i / m;
+            int c = i % m;
+
+            if ((rowsBQ & (1 << r)) == 0 && (colsBQ & (1 << c)) == 0 && (diagBQ & (1 << (r + c))) == 0
+                    && (AdiagBQ & (1 << (r - c + m))) == 0 ) {
+
+                rowsBQ ^= (1 << r);
+                colsBQ ^= (1 << c);
+                diagBQ ^= (1 << (r + c));
+                AdiagBQ ^= (1 << (r - c + m));
+
+                count += nQueenCombination_usingBits(n, i+1, tnq - 1, ans + "(" + r + ", " + c + ") " );
+            
+                rowsBQ ^= (1 << r);
+                colsBQ ^= (1 << c);
+                diagBQ ^= (1 << (r + c));
+                AdiagBQ ^= (1 << (r - c + m));
+            }
+
+        }
+
+        return count;
+
+    }
+
     public static void nQueen() {
         int n = 4, m = 4, tnq = 4;
 
         boolean[][] box = new boolean[n][m];
 
         // System.out.println(nQueenCombination(box, 0, tnq, ""));
-        System.out.println(nQueenCombination_best(box, 0, tnq, ""));
+        // System.out.println(nQueenCombination_best(box, 0, tnq, ""));
+
+        rowsQ = new boolean[n];
+        colsQ = new boolean[m];
+        diagQ = new boolean[n + m - 1 ];
+        AdiagQ = new boolean[n + m - 1 ];
+
+        // System.out.println(nQueenCombination_usingBooleanArray(n, 0, tnq, ""));
+
+        System.out.println(nQueenCombination_usingBits(n, 0, tnq, ""));
     }
 
 }
