@@ -68,13 +68,34 @@ public class l006_bitmasking {
         return count;
     }
 
-    // public static int countBits_3 ( int n ) {
+    // this mask sets the last bit only and by taking xor it removes the last bit
+    public static int countBits_3 ( int n ) {
 
-    // int count = 0;
-    // for(int i = 0; i < 32 ; i++) {
+        int count = 0;
+        
+        while( n!= 0) {
 
-    // }
-    // }
+            count++;
+            
+            int mask = (n & (-n) );
+            n ^= mask;
+        }
+        return count;
+    }
+
+    // this method removes the last bit
+    public static int countBits_4 ( int n ) {
+
+        int count = 0;
+
+        while( n != 0 ) {
+            count++;
+
+            n &= (n-1);
+        }
+
+        return count;
+    }
 
     // LEETCODE 231
 
@@ -150,6 +171,8 @@ public class l006_bitmasking {
     // it gives 1 if both bits are set, if res != 0 that means bit is set then count 
     //  at end of forEach loop simply modulus the count value with k and if != 0 then bitwise(OR) with ans variable
 
+    // ******THIS LOGIC WILL WORK FOR K REPEATED NUMBERS
+
     public int singleNumber2(int[] nums) {
 
         int ans = 0;
@@ -177,7 +200,7 @@ public class l006_bitmasking {
     // take xor value ,this xor value contains 2 numbers we have to exract them 
     // so make the mask  using (num & -num) (it will give last set bit), this set bit shows that one number's bit is 0 at this location
     // and another's number bit is 1 at this location 
-    
+
     // So now we need to separate 2 sets 
     //  1 : if ele & mask == 0 then put those elts in 1 set
     // 2 : if ele & mask != 0 then put those elts in 2nd set
@@ -189,7 +212,7 @@ public class l006_bitmasking {
         for(int ele : nums) xorValue ^= ele;
         
         // will give the last set value
-        int mask = xorValue & ( - xorValue);
+        int mask = ( xorValue & ( - xorValue) );
         
         // numbers will be of 2 groups
         int a = 0;
