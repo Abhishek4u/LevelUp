@@ -1,5 +1,4 @@
 import java.util.HashSet;
-import java.util.function.Function;
 
 public class l004 {
     public static void main(String[] args) {

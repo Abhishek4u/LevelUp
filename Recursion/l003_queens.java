@@ -266,6 +266,11 @@ public class l003_queens {
 
     // ----------------------------------------SEE BITMASKING FILE FIRST----------------------------------
 
+
+    // See formula in copy
+    // in this approach we saved the time of checking of isValid by deriving formula
+    // when calling mark that index in every array and when coming back unmark that index
+
     static boolean[] rowsQ; // rows queens
     static boolean[] colsQ; // columns
     static boolean[] diagQ; // diagonal
@@ -304,6 +309,11 @@ public class l003_queens {
 
         return count;
     }
+
+    // same as above approach but instead of arrays we used integer and bitmasking
+    // for isValid simply make a mask of formula and take boolean (and) with integer if result is 0 
+    // then we can place as no queen is present there
+    // for marking use boolean (XOR) as it is capable of toggling ie. marking and unmarking
 
     static int rowsBQ = 0; // rows bits queen
     static int colsBQ = 0;
