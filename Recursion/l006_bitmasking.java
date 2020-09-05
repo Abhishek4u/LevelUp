@@ -277,8 +277,8 @@ public class l006_bitmasking {
 
     // leetcode 78 (subsets)
     
-    // If you bitmask(and) the elts with 2 power n from 0 then you will get
-    // the set bit numbers at every i value (you can check by making binary representation)
+    // If you bitmask(and) the elts with outer loop of 0 to 2power n then you will get
+    // the set bit  and do bitmask (and) with inner j loop you will get set numbers (you can check by making binary representation)
     // so add these numbers in array and after finish of loop add in res array
 
     public List<List<Integer>> subsets(int[] nums) {
