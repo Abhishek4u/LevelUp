@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.ArrayList;
 public class l006_bitmasking {
 
     public static void main(String[] args) {
@@ -171,7 +173,7 @@ public class l006_bitmasking {
     // it gives 1 if both bits are set, if res != 0 that means bit is set then count 
     //  at end of forEach loop simply modulus the count value with k and if != 0 then bitwise(OR) with ans variable
 
-    // ******THIS LOGIC WILL WORK FOR K REPEATED NUMBERS
+    // *********************THIS LOGIC WILL WORK FOR K REPEATED NUMBERS ALSO****************************************
 
     public int singleNumber2(int[] nums) {
 
@@ -229,6 +231,73 @@ public class l006_bitmasking {
         
         // after xor only the single occurence number will be there
         return new int[]{a,b};   
+    }
+
+    // leetcode 169 (Majority Element)
+
+    // Given an array of size n, find the majority element.
+    // The majority element is the element that appears more than n/2 times
+
+    // Ans. Using Boyer-Moore Voting Algorithm
+    // ie. if curr number is same as idx then count++ else count--, if the count == 0 that means current
+    // elt is majority so change the idx ans make count to 1 again
+
+    public int majorityElement(int[] nums) {
+        
+        if(nums.length == 0 ) return -1;
+        
+        int n = nums.length;
+        int idx = 0;
+        int count = 1;
+        
+        for(int i = 1;i < n;i++) {
+            
+            if(nums[i] == nums[idx]) {
+                
+                count++;
+            } else {
+                count--;
+            }
+            if(count == 0) {
+                idx = i;
+                count = 1;
+            }
+        }
+        
+        // to verify greater element exists 
+        // otherwise no element is there having greater frequency than length/2
+        // this checking is not needed in this question
+        count = 0;
+        for(int ele : nums) {
+            
+            if( ele == nums[idx] ) count++;
+        }
+        return  nums[idx];
+    }
+
+    // leetcode 78 (subsets)
+    
+    // If you bitmask(and) the elts with 2 power n from 0 then you will get
+    // the set bit numbers at every i value (you can check by making binary representation)
+    // so add these numbers in array and after finish of loop add in res array
+
+    public List<List<Integer>> subsets(int[] nums) {
+
+        List<List<Integer>> res =  new ArrayList<> ();
+
+        int n = nums.length;
+        for(int i = 0; i < (1 << n) ;i++) {
+
+            ArrayList<Integer> ans = new ArrayList<Integer> ();
+
+            for(int j = 0; j < n;j++) {
+                
+                int mask = (1 << j);
+                if((i & mask) != 0) ans.add(nums[j]);
+            }
+            res.add(ans);
+        }
+        return res;
     }
 
 }
