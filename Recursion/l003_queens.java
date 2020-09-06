@@ -15,7 +15,7 @@ public class l003_queens {
         boolean[][] box = new boolean[4][4];
         int tnq = 4;
 
-        // System.out.println(twoDWQueenCombination(box, 0, tnq, ""));
+        // System.out.println(twoDQueenCombination(box, 0, tnq, ""));
         // System.out.println(twoDQueenPermutation(box, 0, tnq, ""));
         // System.out.println(twoDQueenFloorWise(box, 0, tnq, ""));
 
@@ -79,7 +79,7 @@ public class l003_queens {
     // FOR INDEX ==> 1. FOR ROW => DIVIDE i with arr[0].length
     // 2. FOR COLUMN => MODULO j with arr[0].length
 
-    public static int twoDWQueenCombination(boolean[][] box, int idx, int tnq, String ans) {
+    public static int twoDQueenCombination(boolean[][] box, int idx, int tnq, String ans) {
 
         if (tnq == 0) {
             System.out.println(ans);
@@ -96,7 +96,7 @@ public class l003_queens {
             int r = i / m;
             int c = i % m;
 
-            count += twoDWQueenCombination(box, i + 1, tnq - 1, ans + "(" + r + ", " + c + ") ");
+            count += twoDQueenCombination(box, i + 1, tnq - 1, ans + "(" + r + ", " + c + ") ");
         }
 
         return count;

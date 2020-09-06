@@ -137,6 +137,7 @@ public class l001_basic {
 
         // System.out.println(floodFill_(sr,sc,er,ec,vis,dirFour,dirFourS,""));
 
+        // JUMP VARIATION
         System.out.println(floodFillMulti_(sr, sc, er, ec, vis, dirFour, dirFourS, ""));
     }
 
@@ -203,9 +204,11 @@ public class l001_basic {
             count += letterCombination_set2_(digits, idx + 1, codes, ans, res + code.charAt(i));
         }
 
+        // IF WE CAN USE 2 CHARACTERS AT SAME TIME 
         if(idx < digits.length() - 1) {
             cidx = cidx*10 + (digits.charAt(idx+1) - '0');
 
+            // IF 10 AND 11 CHARACTER COMBINATION CAN BE MADE(BCZ WE HAVE CODE FOR THAT)
             if(cidx >= 10 && cidx <= 11) {
                 code = codes[cidx];
                 for(int i = 0;i < code.length();i++) {
@@ -223,7 +226,7 @@ public class l001_basic {
         if(digits.length() == 0) return new ArrayList<String>();
 
         String[] codes = {".,/?", "@#$%", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz","*+-","&^!~"};
-
+        // CODE FOR 10 AND 11 IS ALSO GIVEN SO CHECK THESE ALSO
         List<String> ans = new ArrayList <String> ();
 
         letterCombination_set2_(digits,0,codes,ans,"");

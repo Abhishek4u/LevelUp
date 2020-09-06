@@ -202,6 +202,9 @@ public class l005_sudoku {
                 if (board[i][j] == 0) {
 
                     locOfZeroes.add((i * 9) + j);
+                    //storing row and column ( easy to extract) 
+                    // for row : value / 9
+                    // for col : value % 9
 
                 } else {
 
