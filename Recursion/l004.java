@@ -289,6 +289,7 @@ public class l004 {
     // take vidx and if it reaches to word[] length that means you have placed all
     // the words so return
 
+    // O ( (2^L) * n * m ) // L is length of word
     public static void crossWord() {
 
         char[][] board = {  { '+', '-', '+', '+', '+', '+', '+', '+', '+', '+' },
