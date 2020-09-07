@@ -8,7 +8,9 @@ public class l004 {
     public static void solve() {
 
         // wordBreak();
-        isCryptoValid();
+        // isCryptoValid();
+
+        crossWord();
     }
 
     // -------------------------------WORD-BREAK----------------------------------
@@ -66,14 +68,16 @@ public class l004 {
     // --------------------------------------------CRYPTO-------------------------------------------
 
     // Approach :--->
-        // 1. Find unique characters
-        // 2. Utility (charToNumber, numberUsed)
-        // 3. stringToNumber conversion Function
-        // 4. Recursion call ( 1 to 9 numbers chances giving)
-        // 5. Base case checking that first character should not be mapped to 0 value
+    // 1. Find unique characters
+    // 2. Utility (charToNumber, numberUsed)
+    // 3. stringToNumber conversion Function
+    // 4. Recursion call ( 1 to 9 numbers chances giving)
+    // 5. Base case checking that first character should not be mapped to 0 value
 
-    // Here we have to make single string(send,money,more ==> sendmonyr) of unique characters and then in recursion give every character 
-    // chance to get value from 0 to 9 and in base case check whether it fits to (a + b = c) string or not
+    // Here we have to make single string(send,money,more ==> sendmonyr) of unique
+    // characters and then in recursion give every character
+    // chance to get value from 0 to 9 and in base case check whether it fits to (a
+    // + b = c) string or not
     // if not then backtrack
 
     static String a = "send";
@@ -85,7 +89,7 @@ public class l004 {
     public static int stringToNumber(String str) {
 
         int num = 0;
-        for(int i = 0;i < str.length(); i++) {
+        for (int i = 0; i < str.length(); i++) {
 
             char ch = str.charAt(i);
             num = num * 10 + charToNumber[ch - 'a'];
@@ -96,21 +100,21 @@ public class l004 {
 
     public static int cryptoSolver(String str, int idx) {
 
-        if(idx == str.length()) {
+        if (idx == str.length()) {
 
             int aVal = stringToNumber(a);
             int bVal = stringToNumber(b);
             int cVal = stringToNumber(c);
 
-            if(aVal + bVal == cVal && 
-        charToNumber[a.charAt(0) - 'a'] != 0 && charToNumber[b.charAt(0) - 'a'] != 0 && charToNumber[c.charAt(0) - 'a'] != 0 ) {
+            if (aVal + bVal == cVal && charToNumber[a.charAt(0) - 'a'] != 0 && charToNumber[b.charAt(0) - 'a'] != 0
+                    && charToNumber[c.charAt(0) - 'a'] != 0) {
 
                 System.out.println(aVal + "\n+" + bVal + "\n-----------\n=" + cVal);
                 System.out.println();
                 return 1;
             }
 
-            return 0; // for not going out of range simply return 0 as 
+            return 0; // for not going out of range simply return 0 as
                       // evaluated crypto is not valid
         }
 
@@ -119,10 +123,10 @@ public class l004 {
 
         for (int num = 0; num <= 9; num++) {
 
-            if(!numberUsed[num]) {
+            if (!numberUsed[num]) {
 
                 numberUsed[num] = true;
-                charToNumber[ch-'a'] = num;
+                charToNumber[ch - 'a'] = num;
 
                 count += cryptoSolver(str, idx + 1);
 
@@ -150,5 +154,169 @@ public class l004 {
         }
 
         System.out.println(cryptoSolver(str, 0));
+    }
+
+    // *****************************************CROSS-WORD******************************
+
+    // check if size of word is bigger than boundary then we cannot place
+    // or if there is no - at any point or character present at that location is not
+    // matching with
+    // character of string then return false
+
+    public static boolean canPlaceH(char[][] board, int r, int c, String word) {
+
+        for (int i = 0; i < word.length(); i++) {
+
+            if (c + i >= board[0].length || board[r][c + i] != '-' && board[r][c + i] != word.charAt(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // while placing keep track of placed indexes so that you can remove only these
+    // words when unplacing the word
+
+    public static boolean[] placeH(char[][] board, int r, int c, String word) {
+
+        boolean loc[] = new boolean[word.length()];
+
+        for (int i = 0; i < word.length(); i++) {
+
+            if (board[r][c + i] == '-') {
+
+                board[r][c + i] = word.charAt(i);
+                loc[i] = true;
+            }
+        }
+
+        return loc;
+    }
+
+    // unplace the words where loc[] is true bcz only there we had placed the word
+    public static void unPlaceH(char[][] board, int r, int c, boolean[] loc) {
+
+        for (int i = 0; i < loc.length; i++) {
+
+            if (loc[i] == true) {
+                board[r][i + c] = '-';
+            }
+        }
+    }
+
+    public static boolean canPlaceV(char[][] board, int r, int c, String word) {
+
+        for (int i = 0; i < word.length(); i++) {
+
+            if (r + i >= board.length || board[r + i][c] != '-' && board[r + i][c] != word.charAt(i)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static boolean[] placeV(char[][] board, int r, int c, String word) {
+
+        boolean[] loc = new boolean[word.length()];
+
+        for (int i = 0; i < word.length(); i++) {
+
+            if (board[r + i][c] == '-') {
+
+                board[r + i][c] = word.charAt(i);
+                loc[i] = true;
+            }
+        }
+
+        return loc;
+    }
+
+    public static void unPlaceV(char[][] board, int r, int c, boolean[] loc) {
+
+        for (int idx = 0; idx < loc.length; idx++) {
+
+            if (loc[idx] == true) {
+                board[r + idx][c] = '-';
+            }
+        }
+    }
+
+    // check every spot of board and if it is empty or matches the first character
+    // of word then check in canPlace
+    // and if it is true then place and call recursively
+    public static int crossWord_(char[][] board, String[] words, int vidx) {
+
+        if (vidx == words.length) {
+
+            displayCrossWord(board);
+            return 1;
+        }
+
+        String word = words[vidx];
+
+        int count = 0;
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+
+                if (board[i][j] == '-' || board[i][j] == word.charAt(0)) {
+
+                    if (canPlaceH(board, i, j, word)) {
+
+                        boolean loc[] = placeH(board, i, j, word);
+                        count += crossWord_(board, words, vidx + 1);
+                        unPlaceH(board, i, j, loc);
+                    }
+
+                    if (canPlaceV(board, i, j, word)) {
+
+                        boolean loc[] = placeV(board, i, j, word);
+                        count += crossWord_(board, words, vidx + 1);
+                        unPlaceV(board, i, j, loc);
+                    }
+
+                }
+            }
+        }
+        return count;
+    }
+
+    // check if you can place the whole word or not and if possible place but keep
+    // track of placed indexes
+    // bcz in backtracking you have to unplace these words
+    // take vidx and if it reaches to word[] length that means you have placed all
+    // the words so return
+
+    public static void crossWord() {
+
+        char[][] board = {  { '+', '-', '+', '+', '+', '+', '+', '+', '+', '+' },
+                            { '+', '-', '+', '+', '+', '+', '+', '+', '+', '+' },
+                            { '+', '-', '-', '-', '-', '-', '-', '-', '+', '+' },
+                            { '+', '-', '+', '+', '+', '+', '+', '+', '+', '+' },
+                            { '+', '-', '+', '+', '+', '+', '+', '+', '+', '+' },
+                            { '+', '-', '-', '-', '-', '-', '-', '+', '+', '+' },
+                            { '+', '-', '+', '+', '+', '-', '+', '+', '+', '+' },
+                            { '+', '+', '+', '+', '+', '-', '+', '+', '+', '+' },
+                            { '+', '+', '+', '+', '+', '-', '+', '+', '+', '+' },
+                            { '+', '+', '+', '+', '+', '+', '+', '+', '+', '+' } };
+
+        String[] words = { "agra", "norway", "england", "gwalior" };
+
+        System.out.println(crossWord_(board, words, 0));
+
+    }
+
+    public static void displayCrossWord(char[][] board) {
+
+        for (char[] ar : board) {
+            for (char ch : ar) {
+
+                System.out.print(ch + " ");
+            }
+            System.out.println();
+        }
+        System.out.println();
     }
 }
