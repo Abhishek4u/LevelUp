@@ -25,44 +25,6 @@ public class l001 {
         System.out.println();
     }
 
-    public static void solve1() {
-
-        // int n = 10;
-        // int dp[] = new int[n + 1];
-
-        // System.out.println(fibo(n, dp));
-        // System.out.println(fibo_DP(n, dp));
-        // System.out.println(fibo_Optimized(n));
-        // print(dp);
-
-        int n = 5;
-        int[][] dp = new int[n][n];
-
-        // System.out.println(mazePathsHV(0, 0, n - 1, n - 1, dp));
-        // System.out.println(mazePathsHV_DP(0, 0, n - 1, n - 1, dp));
-
-        System.out.println(mazePathsHVD(0, 0, n - 1, n - 1, dp));
-        System.out.println(mazePathsHVD_DP(0, 0, n - 1, n - 1, dp));
-
-        print2D(dp);
-
-    }
-
-    public static void solve2() {
-
-        int n = 10;
-        int dp[] = new int[n + 1];
-
-        System.out.println(boardPath1(0, n, dp));
-        System.out.println(boardPath1_DP(0, n, dp));
-        System.out.println(boardPath1_Opti(0, n, dp));
-
-        int moves[] = { 2, 7, 5, 3 };
-        // System.out.println(boardPath_Moves(0, n, moves, dp));
-        // System.out.println(boardPath_MovesDP(0, n, moves, dp));
-
-    }
-
     public static int fibo(int n, int dp[]) {
 
         if (n <= 1)
@@ -214,6 +176,29 @@ public class l001 {
         return dp[0][0];
     }
 
+    public static void solve1() {
+
+        // int n = 10;
+        // int dp[] = new int[n + 1];
+
+        // System.out.println(fibo(n, dp));
+        // System.out.println(fibo_DP(n, dp));
+        // System.out.println(fibo_Optimized(n));
+        // print(dp);
+
+        int n = 5;
+        int[][] dp = new int[n][n];
+
+        // System.out.println(mazePathsHV(0, 0, n - 1, n - 1, dp));
+        // System.out.println(mazePathsHV_DP(0, 0, n - 1, n - 1, dp));
+
+        System.out.println(mazePathsHVD(0, 0, n - 1, n - 1, dp));
+        System.out.println(mazePathsHVD_DP(0, 0, n - 1, n - 1, dp));
+
+        print2D(dp);
+
+    }
+
     // ----------------------------BOARD VARIATION--------------------------
 
     public static int boardPath1(int si, int ei, int dp[]) {
@@ -331,6 +316,21 @@ public class l001 {
         }
 
         return dp[0];
+    }
+    
+    public static void solve2() {
+
+        int n = 10;
+        int dp[] = new int[n + 1];
+
+        System.out.println(boardPath1(0, n, dp));
+        System.out.println(boardPath1_DP(0, n, dp));
+        System.out.println(boardPath1_Opti(0, n, dp));
+
+        int moves[] = { 2, 7, 5, 3 };
+        // System.out.println(boardPath_Moves(0, n, moves, dp));
+        // System.out.println(boardPath_MovesDP(0, n, moves, dp));
+
     }
 
 }
