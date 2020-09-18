@@ -4,6 +4,18 @@ import java.util.Stack;
 
 // Tree ScreenShots Starts from 4677
 public class l001 {
+
+    public class Node {
+
+        Node left;
+        Node right;
+        int data;
+
+        Node(int data) {
+            this.data = data;
+        }
+    }   
+
     public static void main(String[] args) {
 
         solve();

@@ -25,11 +25,20 @@ public class views {
 
         leftView(root);
         rightView(root);
+
         verticalOrder(root);
         verticalOrderSum(root);
+
         BottomView_RightPref(root);
         BottomView_LeftPrefer(root);
+
         TopView(root);
+        TopView_PrintBFSWise(root);
+
+        diagonalViewFromLeft(root);
+        diagonalViewFromRight(root);
+
+        boundaryTraversal(root);
     }
 
     static int idx = 0;
@@ -342,6 +351,259 @@ public class views {
         }
 
         for(Node ele: ans) System.out.print(ele.data + " ");
+        System.out.println();
+    }
+
+    public static void TopView_PrintBFSWise(Node node) {
+        // in bfs wise printing you have to print from root(middle elt) and its adjacent elts ans so on
+
+        System.out.println("Top View BFS WISE PRINTING");
+
+        int minMax[] = {0,0};
+        width(node,0,minMax);
+
+        int level = minMax[1] - minMax[0] + 1;
+
+        Node ans[] = new Node[level];
+
+        LinkedList<vPair> que = new LinkedList<> ();
+
+        que.addLast(new vPair(node, Math.abs(minMax[0])));
+
+        while(que.size() != 0) {
+
+            int size = que.size();
+
+            while(size-- > 0) {
+
+                vPair rVtx = que.removeFirst();
+                Node remNode = rVtx.node;
+                int lvl = rVtx.level;
+
+                if(ans[lvl] == null) {
+                    // update only once in top view
+                    ans[lvl] = remNode;
+                }
+
+                if(remNode.left != null) que.add( new vPair(remNode.left,lvl-1));
+                if(remNode.right != null) que.add( new vPair(remNode.right,lvl+1));
+            }
+        }
+        // for bfs wise printing
+        int rNodeIdx = Math.abs(minMax[0]); // rootNode idx
+        System.out.print(ans[rNodeIdx].data+ " ");
+
+        // Start printing adjacent elts
+        int i = rNodeIdx - 1, j = rNodeIdx + 1;
+
+        while(i >= 0 && j < ans.length) System.out.print(ans[i--].data + " " + ans[j++].data + " ");
+
+        // if there are any left out elts then print them
+        while(i >= 0) System.out.print(ans[i--].data);
+        while(j < ans.length) System.out.print(ans[j++].data);
+
+        System.out.println();
+    }
+
+    public static void diagonalViewFromLeft(Node node) {
+
+        System.out.println("Diagonal View From Left");
+
+        int minMax[] = {0,0};
+        width(node,0,minMax);
+
+        int length = Math.abs(minMax[0]) + 1;
+        // for left diagonal we need length of al equal to left side elts of tree
+        // bcz we will see from left diagonal side
+
+        ArrayList<Integer>[] ans = new ArrayList[length];
+
+        for(int i = 0; i < ans.length; i++) {
+            ans[i] = new ArrayList<> ();
+        }
+
+        LinkedList<vPair> que = new LinkedList<> ();
+
+        que.addLast(new vPair(node,Math.abs(minMax[0])));
+
+        while(que.size() > 0) {
+
+            int size = que.size();
+
+            while(size-- > 0) {
+
+                vPair rVtx = que.removeFirst();
+                Node remNode = rVtx.node;
+                int lvl = rVtx.level;
+
+                ans[lvl].add(remNode.data);
+
+                if(remNode.left != null) que.addLast(new vPair(remNode.left,lvl - 1));
+                if(remNode.right != null) que.addLast(new vPair(remNode.right,lvl));
+                //  in diagonal traversal for right child lvl will remain same 
+                // and for left child it will decrement
+                // you can verify by making diagram
+
+            }
+        }
+
+        int i = 0;
+        for(ArrayList<Integer> al : ans) {
+
+            System.out.print("Level " + i++ +" ");
+            for(int val: al) {
+                System.out.print(val+ " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void diagonalViewFromRight(Node node) {
+
+        System.out.println("Diagonal View From Right");
+
+        int minMax[] = {0,0};
+        width(node,0,minMax);
+
+        int length = minMax[1] + 1;
+        // for right diagonal we need length of al equal to right side elts of tree
+        // bcz we will see from right diagonal side
+
+        ArrayList<Integer>[] ans = new ArrayList[length];
+
+        for(int i = 0; i < ans.length; i++) {
+            ans[i] = new ArrayList<> ();
+        }
+
+        LinkedList<vPair> que = new LinkedList<> ();
+
+        que.addLast(new vPair(node,Math.abs(0)));
+        // for right view diagonal root will come in 1st arrayList
+
+        while(que.size() > 0) {
+
+            int size = que.size();
+
+            while(size-- > 0) {
+
+                vPair rVtx = que.removeFirst();
+                Node remNode = rVtx.node;
+                int lvl = rVtx.level;
+
+                ans[lvl].add(remNode.data);
+
+                if(remNode.left != null) que.addLast(new vPair(remNode.left,lvl));
+                if(remNode.right != null) que.addLast(new vPair(remNode.right,lvl+1));
+                // in diagonal traversal for left child lvl will remain same 
+                // and for right child it will increment
+                // you can verify by making diagram
+
+            }
+        }
+
+        int i = 0;
+        for(ArrayList<Integer> al : ans) {
+
+            System.out.print("Level " + i++ +" ");
+            for(int val: al) {
+                System.out.print(val+ " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void boundaryTraversal(Node node) {
+
+        System.out.println("Boundary Traversal");
+
+        // For boundary traversal
+        //  1. Get top view list 
+        //      1.1 -> Now print root to left elts
+        //  2. Now print leaf Nodes
+        //  3. Now print left out elts of top view in reverse order
+
+        // Top view 
+        int minMax[] = {0,0};
+        width(node,0,minMax);
+
+        int length = minMax[1] - minMax[0] + 1;
+
+        Node[] ans = new Node[length];
+
+        LinkedList<vPair> que = new LinkedList<> ();
+        que.add(new vPair(node,Math.abs(minMax[0])));
+
+        while(que.size() != 0) {
+
+            int size = que.size();
+
+            while(size -- > 0) {
+
+                vPair rVtx = que.removeFirst();
+                Node remNode = rVtx.node;
+                int lvl = rVtx.level;
+
+                if(ans[lvl] == null) ans[lvl] = remNode;
+
+                if(remNode.left != null) que.addLast(new vPair(remNode.left,lvl - 1));
+                if(remNode.right != null) que.addLast(new vPair(remNode.right,lvl + 1));
+            }
+        }
+
+        // Child List
+
+        Node[] ans2 = new Node[length];
+
+        LinkedList<vPair> que2 = new LinkedList<> ();
+        que2.add(new vPair(node,Math.abs(minMax[0])));
+
+        while(que2.size() > 0) {
+
+            int size = que2.size();
+
+            while(size-- > 0) {
+
+                vPair rVtx = que2.removeFirst();
+                Node remNode = rVtx.node;
+                int lvl = rVtx.level;
+
+                if(remNode.left == null && remNode.right == null) {
+
+                    ans2[lvl] = remNode;
+                    // leaf node
+                } else {
+
+                    if(remNode.left != null ) que2.addLast(new vPair(remNode.left, lvl - 1));
+                    if(remNode.right != null) que2.addLast(new vPair(remNode.right, lvl + 1));
+                } 
+            }
+        }
+
+        // Now print the elts
+
+        // 1. print left boundary elts
+        int rNodeIdx = Math.abs(minMax[0]); // rootNode index
+        int idx = rNodeIdx;
+
+        while( idx >= 0) 
+            System.out.print(ans[idx--].data + " ");
+
+        // 2. Print leaf nodes
+        idx = 1; // 1 bcz we already printed 1st leafnode
+        while(idx < ans2.length) {
+            if(ans2[idx] == null) {
+                idx++;
+                continue;
+            }
+            System.out.print(ans2[idx++].data + " ");
+        }
+        // 3. Print right boundary elts in reverse order
+
+        idx = ans2.length - 2; // -2 bcz we already printed last leaf node elt in upper traversal
+
+        while(idx > rNodeIdx) // while idx is greater than root node elt
+            System.out.print(ans[idx--].data + " ");
+        
         System.out.println();
     }
     
