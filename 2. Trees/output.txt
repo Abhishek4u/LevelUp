@@ -1,3 +1,24 @@
-6
-6
-6
+Left View
+10 20 40 80 
+Right View
+10 30 70 120 
+Vertical Order
+Level 0 40 
+Level 1 20 80 100 
+Level 2 10 50 60 
+Level 3 30 90 110 
+Level 4 70 
+Level 5 120 
+Vertical Order Sum
+Level 0 40 
+Level 1 200 
+Level 2 120 
+Level 3 230 
+Level 4 70 
+Level 5 120 
+BottomView Right Preference
+40 100 60 110 70 120 
+BottomView Left Preference
+40 80 50 90 70 120 
+Top View
+40 20 10 30 70 120 

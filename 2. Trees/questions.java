@@ -1,3 +1,4 @@
+
 // Tree ScreenShots Starts from 4677
 import java.util.*;
 
@@ -83,7 +84,8 @@ public class questions {
     public int maxPathSum_(TreeNode root) {
         if (root == null) {
             return 0;
-            // if you return -(int) 1e8 then it is also valid because we compared values in  conditions
+            // if you return -(int) 1e8 then it is also valid because we compared values in
+            // conditions
         }
 
         int lMax = maxPathSum_(root.left); // maximum sum of left subtree
@@ -104,4 +106,94 @@ public class questions {
         maxPathSum_(root);
         return NTNRes;
     }
+
+    // Leetcode 863. All Nodes Distance K in Binary Tree
+    // https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/
+
+    public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
+
+        List<Integer> ans = new ArrayList<>();
+        kFar(root, target, K, ans);
+        return ans;
+
+    }
+
+    public void kDown(TreeNode node, TreeNode block, int k, List<Integer> ans) {
+
+        if (node == null || node == block || k < 0)
+            return;
+
+        if (k == 0) {
+            ans.add(node.val);
+            return;
+        }
+        kDown(node.left, block, k - 1, ans);
+        kDown(node.right, block, k - 1, ans);
+
+    }
+
+    public int kFar(TreeNode node, TreeNode target, int k, List<Integer> ans) {
+
+        if (node == null) {
+            return -1;
+        }
+
+        if (node == target) {
+
+            kDown(node, null, k, ans);
+            return 1; // found and for its parent k is at 1 distance
+        }
+
+        int ld = kFar(node.left, target, k, ans);
+        if (ld != -1) {
+
+            kDown(node, node.left, k - ld, ans);
+            return ld + 1; // for its parent k is at ld + 1
+        }
+
+        int rd = kFar(node.right, target, k, ans);
+        if (rd != -1) {
+
+            kDown(node, node.right, k - rd, ans);
+            return rd + 1;
+        }
+
+        return -1; // not found
+    }
+
+    // Leetcode 236. Lowest Common Ancestor of a Binary Tree
+    // https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
+
+    TreeNode LCANode = null;
+    public boolean lowestCommonAncestor_(TreeNode root, TreeNode p, TreeNode q) {
+
+        if(root == null) return false;
+
+        boolean selfDone = false;
+        if(root == p || root == q) selfDone = true;
+
+        boolean leftDone = lowestCommonAncestor_(root.left, p, q);
+        // if LCA is found then no need to go in recursion
+        if(LCANode != null) return true;
+        
+        boolean rightDone = lowestCommonAncestor_(root.right, p, q);
+        if(LCANode != null) return true;
+
+        if((leftDone && rightDone) || (leftDone && selfDone) || (rightDone && selfDone)) {
+            // if any 2 of them are true then curr node will be ancestor
+            LCANode = root;
+        }
+        // return true if found p or q
+        return selfDone || leftDone || rightDone;
+    }
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+
+        lowestCommonAncestor_(root, p, q);
+
+        return LCANode;
+
+    }
+
+    
 }
