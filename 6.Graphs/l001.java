@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 public class l001 {
 
     public static class Edge{
@@ -14,7 +15,8 @@ public class l001 {
 
     public static void main(String[] args) {
 
-        solve();
+        // solve();
+        solve2();
     }
 
     public static void solve() {
@@ -35,6 +37,14 @@ public class l001 {
         // origin source, start node,vtx traversed count,vis[], ans string
 
         System.out.println(GCC());
+    }
+
+    public static void solve2() {
+
+        constructGraph();
+        boolean vis[] = new boolean[N];
+        // BFS_01(0,vis);
+        BFS_Levelwise(0,vis);
     }
 
     public static void addEdge(int u, int v, int w) {
@@ -256,4 +266,72 @@ public class l001 {
     }
 
     
+    //-----------------------------------BFS---------------------------
+
+    public static void BFS_01(int src, boolean[]vis) {
+
+        LinkedList<Integer> que = new LinkedList<>();
+
+        que.addLast(src);
+
+        while(que.size() > 0) {
+
+            int vtx = que.removeFirst();
+
+            if(vis[vtx]) {
+                System.out.println("Cycle found at: " + vtx);
+                continue; 
+            //     // if you add again it will form cycle again
+            }
+            // System.out.print(vtx + " ");
+
+            vis[vtx] = true; // mark the elt
+
+            for(Edge e : graph[vtx]) {
+
+                if(!vis[e.v]) {
+                    que.addLast(e.v);
+                }
+            }
+
+        }
+    }
+
+    public static void BFS_Levelwise(int src, boolean[] vis) {
+
+        LinkedList<Integer> que = new LinkedList<> ();
+        que.addLast(src );
+
+        int level = 0;
+        while(que.size() != 0) {
+
+            int size = que.size();
+            System.out.print("Level " + level + " : ");
+
+            while(size-- > 0) {
+
+                int vtx = que.removeFirst();
+
+                if(vis[vtx]) {
+                    // for not visiting cycle loop
+                    continue;
+                }
+                System.out.print(vtx + " ");
+
+                vis[vtx] = true; // mark
+
+                for(Edge e: graph[vtx]) {
+
+                    if(!vis[e.v]) {
+
+                        que.addLast(e.v);
+                    }
+                }
+            }
+            level++;
+            System.out.println();
+        }
+    }
+
+
 }
