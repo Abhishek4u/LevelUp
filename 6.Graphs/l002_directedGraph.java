@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.ArrayDeque;
 public class l002_directedGraph {
 
     // In directed graph you need only neighbour vtx as weight does not matter
@@ -60,7 +62,7 @@ public class l002_directedGraph {
     // bcz v depends on u so by traversing on u neighbours you can increment
     public static void topologicalOrder_KahnsAlgo() {
 
-        int[] indegree[] = new int[N];
+        int[] indegree = new int[N];
 
         for(int i = 0;i < N;i++) {
 
@@ -71,7 +73,7 @@ public class l002_directedGraph {
         }
 
         ArrayDeque<Integer> que = new ArrayDeque<> ();
-        ArrayList<Integer> ans = new Arraylist<> ();
+        ArrayList<Integer> ans = new ArrayList<> ();
 
         for(int i =0 ;i < N;i++) {
             if(indegree[i] == 0) que.addLast(i);

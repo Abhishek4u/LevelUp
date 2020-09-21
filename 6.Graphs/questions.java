@@ -1047,6 +1047,343 @@ public static class questions {
         return level;
     }
 
+    //---------------------------------------UNION-FIND-QUESTIONS-------------------------
+
+    // Leetcode 200. Number of Islands
+    // https://leetcode.com/problems/number-of-islands/
+
+    int par[];
+    public int findPar(int u) {
+        if(par[u] == u) return u;
+        
+        else return par[u] = findPar(par[u]);
+    }
     
+    public int numIslands(char[][] grid) {
+        
+        if(grid.length == 0 || grid[0].length == 0) return 0;
+        
+        int n = grid.length, m = grid[0].length;
+        
+        par = new int[n*m];
+        int countOnes = 0;
+        
+        for(int i = 0; i < n*m;i++) {
+            par[i] = i;
+            if(grid[i/m][i%m] == '1') countOnes++;
+        }
+        
+        for(int i = 0; i < n; i++) {
+            for(int j = 0 ; j < m; j++) {
+                
+                if(grid[i][j] == '1') {
+                    int p1 = findPar(i*m + j);
+                    
+                    if(j+1 < m && grid[i][j+1] == '1') {
+                        
+                        int p2 = findPar( i*m + (j+1) );
+                        if(p1 != p2) {
+                            par[p2] = p1;
+                            countOnes--;
+                        }
+                    }
+                    
+                    if(i+1 < n && grid[i+1][j] == '1') {
+                        
+                        int p2 = findPar( (i+1)*m + j );
+                        if(p2 != p1) {
+                            par[p2] = p1;
+                            countOnes--;
+                        }
+                    }
+                }
+            }
+        }
+    return countOnes;
+    }
     
+    // Leetcode 547. Friend Circles
+    // https://leetcode.com/problems/friend-circles/
+    
+    // 1. Normal DFS
+    public void dfs(int src,ArrayList<Integer>[] graph, boolean vis[]) {
+        vis[src] = true;
+        
+        for(int v : graph[src]) {
+            if(!vis[v]) 
+                dfs(v,graph,vis);
+        }
+    }
+    
+    public int findCircleNum(int[][] M) {
+        int n = M.length;
+        int m = M[0].length;
+        ArrayList<Integer>[] graph= new ArrayList[n];
+        
+        for(int i = 0; i < n;i++) graph[i] = new ArrayList<>();
+        
+        for(int i = 0; i < n;i++) {
+            for(int j = 0; j < m;j++)  {
+                
+                if(i != j && M[i][j] == 1) {
+                    graph[i].add(j);
+                    graph[j].add(i);
+                }
+                  
+            }
+        }
+        
+        boolean vis[] = new boolean[n];
+        int count = 0;
+        for(int i =0; i < n;i++) {
+            
+            if(!vis[i]) {
+                count++;
+                dfs(i,graph,vis);
+            }
+        }
+        
+        return count;
+    }
+
+    // 2. Using Union-Find
+    int par[];
+    public int findPar(int u) {
+        
+        if(par[u] == u) return u;
+        
+        else return par[u] = findPar(par[u]);
+    }
+    public int findCircleNum(int[][] M) {
+        
+        int n = M.length;
+        int m = M[0].length;
+        
+        par = new int[n];
+        for(int i = 0; i < n; i++) {
+            par[i] = i;
+        }
+        
+        int countFriendPairs = n; 
+        // total no of people in starting (all are strangers right now)
+        
+        for(int i = 0;i < n;i++) {
+            for(int j = 0;j < m;j++) {
+                
+                if(M[i][j] == 1) {
+                    
+                    int p1 = findPar(i);
+                    int p2 = findPar(j);
+                    
+                    if(p1 != p2) {
+                        
+                        countFriendPairs--; 
+                        
+                        // pair is generated so decrease the total count as we merged
+                        par[p1] = p2;
+                        // change anyone's parent as it will be corrected to global parent
+                        // when path compression will happen
+                    }
+                }
+            }
+        }
+        
+        return countFriendPairs;
+    }
+
+    public String smallestEquivalentString(String A, String B,String S) {
+
+        par = new int[26];
+        // for alphabets 
+        for(int i = 0; i < 26;i++) {
+            par[i] = i;
+        }
+
+        int min = Math.min(A.length() ,B.length());
+
+        for(int i = 0; i < min; i++) {
+            
+            int p1 = findPar(A.charAt(i) - 'a');
+            int p2 = findPar(B.charAt(i) -  'a');
+
+            par[p1] = Math.min(p1,p2);
+            par[p2] = Math.min(p1,p2);
+            // store minimum as we want min lexographical string
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        for(int i = 0; i < S.length() ; i++) {
+
+            int chIdx = S.charAt(i) - 'a';
+
+            int smallest = findPar(chIdx); // smallest char index stored at chIdx location (lexographically)
+
+            sb.append((char) (smallest + 'a') );
+        }
+
+        return sb.toString();
+    }
+
+    //Leetcode 684 Redundant Connection
+    // https://leetcode.com/problems/redundant-connection/
+
+    public int[] findRedundantConnection(int[][] edges) {
+        
+        int n = edges.length;
+        par = new int[n+1];
+    
+        for(int i = 0; i < n; i++) par[i] = i;
+        
+        int ans[] = null;
+        for(int a[] : edges) {
+            
+            int u = a[0];
+            int v = a[1];
+            
+            int p1 = findPar(u);
+            int p2 = findPar(v);
+            
+            if(p1 == p2) {
+                ans = a;
+                break; 
+                // both are already connected using indirect edge
+                // and if they connect again then circle will be formed 
+            } else {
+                par[p1] = p2;
+            }
+        }
+        return ans;
+    }
+
+    // Leetcode 839. Similar String Groups
+    // https://leetcode.com/problems/similar-string-groups/
+    
+    public boolean isSimilar(String A,String B) {
+        
+        int count = 0;
+        for(int i = 0; i < A.length();i++) {
+            
+            if( A.charAt(i) != B.charAt(i) && ++count > 2) { 
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public int numSimilarGroups(String[] A) {
+        
+        int n = A.length;
+        
+        par = new int[n];
+        for(int i = 0; i < n; i++) par[i] = i;
+        // par[i] shows a string at a[i]
+        
+        int count = n;
+        for(int i = 0; i < n ;i++) {
+            for(int j = i+1;j < n;j++) {
+                
+                if(isSimilar(A[i],A[j])) {
+                    
+                    int p1 = findPar(i);
+                    int p2 = findPar(j);
+                    
+                    // if both strings have diff parent then merge them as they are similar
+                    if(p1 != p2) {
+                        //merge them
+                        par[p1] = p2;
+                        count--;
+                        
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    // Leetcode 305 Number of Islands2 HIDDEN QUES
+
+    public List<Integer> numIslands2(int n, int m,int[][] positions) {
+
+        par = new int[n*m];
+
+        for(int i =0 ;i < n*m; i++) par[i] = i;
+
+        int islandCount = 0;
+
+        int dir[][] = {{0,1}, {0,-1}, {-1,0} ,{1,0}};
+
+        int[][]mat = new int[n][m];
+        List<Integer> ans = new ArrayList<>();
+
+        for(int []a : positions) {
+            int i = a[0];
+            int j = a[1];
+
+            if(mat[i][j] == 0) {
+                int p1 = findPar(i*m+j);
+                mat[i][j] = 1;
+                islandCount++;
+
+                for(int d[]: dir) {
+
+                    int r = i + d[0];
+                    int c = j + d[1];
+
+                    if(r >= 0 && c >= 0 && r < n && c < m && mat[r][c] == 1) {
+                        int p2 = findPar(r*m + c);
+
+                        if(p1 != p2) {
+                            islandCount--;
+                            par[p2] = p1;
+                            // make curr vtx as parent so that for other nodes if we 
+                            // query for parent then they will return new parent and -- island will happen only once 
+                            // if all adjacent nodes were in a single group/island
+                        }
+                    }
+                }
+                ans.add(islandCount);
+            }
+            return ans;
+        }
+    }
+
+    // Leetcode 1168 (HIDDEN QUES) Optimize-water-distribution-in-a-village
+    // Take a centre well ie. 0 and make pts from that
+    public int minCostToSupplyWater(int n, int[] wells,int[][] pipes) {
+
+        ArrayList<int[]> graph = new ArrayList<>();
+
+        for(int[] e : pipes) graph.add(e);
+
+        for(int i =0 ;i < wells.length;i++) {
+            graph.add(new int[] { 0 , i+1, wells[i]});
+            // centre well (ie. 0), curr house(ie. i+1 ) , and well cost for that house
+        }
+
+        Collections.sort(graph, (a,b) -> {
+            return a[2] - b[2];
+        });
+        // sort according to minimum weight
+
+        par = new int[n+1];
+        for(int i = 0 ;i <= n;i++) par[i] = i;
+
+        int weight = 0;
+        for(int [] a: graph) {
+
+            int p1 = findPar(a[0]);
+            int p2 = findPar(a[1]);
+
+            if(p1 != p2) {
+                // merge only when their parent are different
+                par[p1] = p2;
+                weight += a[2];
+            }
+
+            // if parents are same and we merge the vtx's parent then cylce will be created
+        }
+
+        return weight;
+    }
 }

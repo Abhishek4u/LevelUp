@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Arrays;
 public class l003_unionFind{
 
     public static class Edge{
@@ -131,15 +133,15 @@ public class l003_unionFind{
         Arrays.sort(graph, (a,b) -> {
             return a[2] - b[2]; // this - other,default, Increasing
             // return b[2]-a[2]; // other - this, reverse of default, Decreasing
-        })
+        });
         // sorting a/weight
 
         for(int i = 0; i < N;i++) par[i] = i;
 
         for(int[] a : graph) {
 
-            int p1 = findPar(u);
-            int p2 = findPar(v);
+            int p1 = findPar(a[0]); // u
+            int p2 = findPar(a[1]); // v
 
             if(p1 != p2) {
 
