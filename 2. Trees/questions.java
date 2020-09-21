@@ -195,5 +195,103 @@ public class questions {
 
     }
 
+    // ----------------------------------------BST--------------------------
+
+    // Leetcode 235 Lowest Common Ancestor of a Binary Search Tree
+    // https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        
+        TreeNode curr = root;
+        
+        while(curr != null) {
+            
+            if(p.val > curr.val && q.val > curr.val) {
+                curr = curr.right;
+                
+            } else if( p.val < curr.val && q.val < curr.val ) {
+                curr = curr.left;
+                
+            } else {
+                // curr elt is lca
+                return curr;
+            }
+        }
+        return null;
+        
+    }
+
+    // Leetcode 173. Binary Search Tree Iterator
+    // https://leetcode.com/problems/binary-search-tree-iterator/
+
+    Stack<TreeNode> st = new Stack<> ();
+    public BSTIterator(TreeNode root) {
+        
+        pushAllNextElements(root);
+    }
+    
+    public void pushAllNextElements(TreeNode node) {
+        
+        while(node != null) {
+            st.push(node);
+            node = node.left;
+        } 
+    }
+    /** @return the next smallest number */
+    public int next() {
+        
+        TreeNode rv = st.pop();
+        
+        if(rv.right != null) {
+            // if smaller elts are there in right subtree of removing node
+            // then push them in stack
+            pushAllNextElements(rv.right);
+            
+        }
+        return rv.val;
+    }
+    
+    /** @return whether we have a next smallest number */
+    public boolean hasNext() {
+        
+        return st.size() != 0;
+    }
+
+    // Binary Tree to Circular Doubly Linked List
+    // https://practice.geeksforgeeks.org/problems/binary-tree-to-cdll/1
+
+    Node bTreeToClist(Node root)
+    {
+        //your code here
+        head = null;
+        prev = null;
+        
+        bTreeToClist_(root);
+        
+        head.left = prev;
+        prev.right = head;
+        return head;
+    }
+    
+    static Node head, prev;
+    public void bTreeToClist_(Node node) {
+        if(node == null) return;
+        
+        bTreeToClist_(node.left);
+        
+        if(head == null) head = node;
+        
+        else {
+            // it does not give null error for leftmost node bcz
+            // at that node we set our head in if condition and then prev
+            // using prev = node line 
+            node.left = prev;
+            prev.right = node;
+        }
+        prev = node;
+        
+        bTreeToClist_(node.right);
+    }
+
     
 }

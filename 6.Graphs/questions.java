@@ -564,7 +564,7 @@ public static class questions {
         return -1; // if no path found
     }
 
-    // Leetcode 542
+    // Leetcode 542  01 Matrix
     // https://leetcode.com/problems/01-matrix/
 
     // 1. My Approach
@@ -797,4 +797,256 @@ public static class questions {
         
         return ones;
     }
+
+    // ----------------------------Topological-Questions-------------------------
+
+    // Leetcode 207. Course Schedule
+    // https://leetcode.com/problems/course-schedule/
+    public boolean canFinish(int N, int[][] prerequisites) {
+        
+        ArrayList<Integer> graph[] = new ArrayList[N];
+        for(int i = 0; i < N; i++) graph[i] = new ArrayList<>();
+        
+        int indegree[] = new int[N];
+        
+        for(int a[] : prerequisites) {
+            
+            int u = a[0];
+            int v = a[1];
+            
+            indegree[v]++;
+            
+            graph[u].add(v);
+        }
+        
+        ArrayDeque<Integer> que = new ArrayDeque<>();
+        
+        for(int i = 0; i < N; i++) if(indegree[i] == 0) que.addLast(i);
+        
+        int count = 0;
+        while(que.size() > 0) {
+            int vtx = que.removeFirst();
+            
+            count++;
+            // no of vtx travelled
+            
+            for(int v : graph[vtx]) {
+                
+                if( --indegree[v] == 0) {
+                    que.addLast(v);
+                }
+            }
+        }
+        
+        return count == N;
+    }
+
+    // Leetcode 210. Course Schedule II
+    // https://leetcode.com/problems/course-schedule-ii/
+
+    //1. Using Kahn's algo
+    public int[] findOrder(int N, int[][] prerequisites) {
+        
+        ArrayList<Integer>[] graph = new ArrayList[N];
+        for(int i = 0;i < N;i++) graph[i] = new ArrayList<>();
+        int indegree[] = new int[N];
+        
+        for(int a[]: prerequisites) {
+            
+            int u = a[0];
+            int v = a[1];
+            
+            graph[u].add(v);
+            indegree[v]++;
+        }
+        
+        ArrayDeque<Integer> que = new ArrayDeque<>();
+        
+        for(int i = 0; i < N; i++) {
+            if(indegree[i] == 0 ) que.addLast(i);
+        }
+        int ans[] = new int[N];
+        int idx = N - 1;
+        // answer is needed in reverse order so will fill in reverse order
+        
+        while(que.size() > 0) {
+            
+            int vtx = que.removeFirst();
+            ans[idx--] = vtx;
+            
+            for(int v : graph[vtx]) {
+                if(--indegree[v] == 0) {
+                    que.addLast(v);
+                }
+            }
+        }
+        
+        if(idx != -1 ) return new int[0];
+        //  index does not traversed all elts
+        // so cycle is present so return empty []
+        
+        return ans;
+    }
+
+    // 2. Using Kahn's algo
+    //  here graph is created according to ques(ie. a[0] is v and a[1] is u)
+    public int[] findOrder(int n, int[][] prerequisites) {
+        
+        ArrayList<Integer>[] graph = new ArrayList[n];
+        for(int i = 0; i < n;i++) graph[i] = new ArrayList<> ();
+        int []indegree = new int[n];
+        
+        for(int a[]: prerequisites) {
+            int v = a[0];
+            // first vtx is v in question to take v as first ans u as second
+            int u = a[1];
+            
+            graph[u].add(v);
+            indegree[v]++;
+        }
+        ArrayDeque<Integer> que = new ArrayDeque<>();
+        for(int i=0; i<n; i++) {
+            if(indegree[i] == 0) {
+                que.addLast(i);
+            }
+        }
+        int ans[] = new int[n];
+        int idx = 0;
+        while(que.size() > 0) {
+            
+            int vtx = que.removeFirst();
+            ans[idx++] = vtx;
+            
+            for(int v : graph[vtx]) {
+                
+                if(--indegree[v] == 0) {
+                    que.addLast(v);
+                }
+            }
+        }
+        if(idx != n) return new int[0];
+        else return ans;
+    }
+
+    // 3. Using DFS
+    public boolean isCyclePresent(ArrayList<Integer>[] graph, int src,int vis[], ArrayList<Integer> ans) {
+        
+        vis[src] = 0;
+        
+        for(int v : graph[src]) {
+            
+            if(vis[v] == -1) {
+                if(isCyclePresent(graph,v,vis,ans)) return true;
+                
+            } else if(vis[v] == 0) {
+                return true;
+                // vtx is part of same path so cycle is present
+            }
+        }
+        vis[src] = 1;
+        ans.add(src);
+        
+        return false;
+    }
+    
+    public int[] findOrder(int N, int[][] prerequisites) {
+        ArrayList<Integer>[] graph = new ArrayList[N];
+        
+        for(int i =0 ;i < N; i++) graph[i] = new ArrayList<>();
+        
+        for(int a[] : prerequisites) {
+            int u = a[0];
+            int v = a[1];
+            
+            graph[u].add(v);
+            
+        }
+        
+        int vis[] = new int[N];
+        Arrays.fill(vis, -1);
+        // -1 : not visited
+        //  0 : visited in same path
+        //  1 : visited but not a part of my curr path
+        ArrayList<Integer> ans = new ArrayList<> ();
+        
+        for(int i =0 ;i < N ; i++) {
+            
+            if(vis[i] == -1) {    
+                if(isCyclePresent(graph,i,vis,ans)){
+                    return new int[0];
+                }
+            }
+        }
+        
+        int res[] = new int[ans.size()]; 
+        int idx = 0;
+        for(int ele : ans) res[idx++] = ele;
+        
+        return res;
+    }
+
+    // Leetcode 329. Longest Increasing Path in a Matrix
+    // https://leetcode.com/problems/longest-increasing-path-in-a-matrix/
+
+    public int longestIncreasingPath(int[][] matrix) {
+        
+        if(matrix.length == 0 || matrix[0].length == 0) return 0;
+        int n = matrix.length, m = matrix[0].length;
+        
+        
+        int indegree[][] = new int[n][m];
+        int dir[][] = { {0,1}, {0,-1}, {-1,0}, {1,0} };
+        
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0;j < m; j++) { 
+                for(int d[] : dir) {
+                    
+                    int x = i + d[0];
+                    int y = j + d[1];
+                    
+                    if(x >= 0 && y >= 0 && x < n && y < m && matrix[x][y] > matrix[i][j]) {
+                        indegree[x][y]++;
+                    }
+                }  
+            }         
+        }
+        ArrayDeque<int[]> que = new ArrayDeque<>();
+         for(int i = 0 ; i < n; i++) {
+            for(int j = 0;j < m; j++) {
+                if(indegree[i][j] == 0) {
+                    que.addLast( new int[]{i,j});
+                }
+            }
+        }
+        int level = 0;
+        while(que.size() > 0) {
+            
+            int size = que.size();
+            while(size-- > 0) {
+                
+                int vtx[] = que.removeFirst();
+                int r = vtx[0];
+                int c = vtx[1];
+
+                for(int d[] : dir) {
+                    int x = r + d[0];
+                    int y = c + d[1];
+
+                    if(x >= 0 && y >= 0 && x < n && y < m && matrix[x][y] > matrix[r][c]) {
+
+                        if(--indegree[x][y] == 0) {
+                            // here we are decrementing so it wont be added next time again
+                            // bcz value will become -ve at that time
+                            que.addLast(new int[]{x,y});
+                        }
+                    }
+                }
+            }
+            level++;
+        }
+        return level;
+    }
+
+    
+    
 }
