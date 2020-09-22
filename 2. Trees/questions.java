@@ -293,5 +293,187 @@ public class questions {
         bTreeToClist_(node.right);
     }
 
+    // Leetcode 99. Recover Binary Search Tree
+    // https://leetcode.com/problems/recover-binary-search-tree/
+
+    TreeNode A = null, B = null;
+    TreeNode prev = null;
+    public boolean recoverTree_(TreeNode root) {
+        
+        if(root == null ) return false;
+        
+        if(recoverTree_(root.left)) return true;
+        
+        if(prev != null && prev.val > root.val) {
+            B = root;
+            
+            if(A == null) A = prev;
+            // first time setting the swapping point
+            else return true;
+            // both elts are set now swap them
+        }
+        prev = root;
+        if(recoverTree_(root.right)) return true;
+        return false;
+    }
+    public void recoverTree(TreeNode root) {
+        
+        recoverTree_(root);
+        
+        if(A != null ){
+            int temp = A.val;
+            A.val = B.val;
+            B.val = temp;
+        }
+    }
+
+    // Leetcode 285
+    // Lintcode 448. Inorder Successor in BST
+    // https://www.lintcode.com/problem/inorder-successor-in-bst/description
+
+    public TreeNode inorderSuccessor(TreeNode curr, TreeNode p) {
+        // write your code here
+        if(curr == null) return null;
+        TreeNode succ = null;
+        
+        while(curr != p) {
+            
+            if(p.val > curr.val) {
+                
+                curr = curr.right;
+                
+            } else if(p.val < curr.val) {
+                succ = curr;
+                curr = curr.left;
+                
+            } else break;
+        }
+        
+        if(curr.right != null) {
+            
+            succ = curr.right;
+            while(succ.left != null) {
+                succ = succ.left;
+            }
+        }
+        return succ;
+    }
+
+    // Leetcode 510 Inorder Seccessor in BST 2
+
+    /*
+    // Definition for a Node.
+    class Node {
+       public int val;
+       public Node left;
+       public Node right;
+       public Node parent;
+    };
+    */
+
+    // In this question you have access to parent too
+    public Node inorderSuccessor2(Node node) {
+
+        Node curr = node;
+        Node succ = null;
+
+        if(curr.right != null) {
+
+            succ = curr.right;
+            while(succ.left != null) succ = succ.left;
+
+            return succ;
+        }
+
+        Node par = curr.parent; // parent
+
+        while(par != null ) {
+            curr = par;
+            par = par.parent;
+
+            if(par.left == curr) return par;
+
+        }
+
+        return succ; // not found so return null
+    }
+
+    // Leetcode 230 Kth Smallest Element in a BST
+    // https://leetcode.com/problems/kth-smallest-element-in-a-bst/
+
+    // 1. My approach
+    public int kthSmallest(TreeNode root, int k) {
+        
+        int arr[] = {k, 0};
+        kthSmallest_(root, arr);
+        return arr[1];
+    }
     
+    public void kthSmallest_(TreeNode root,int[] k) {
+        
+        if(root == null || k[0] < 0) return;
+        
+        kthSmallest_(root.left, k);
+        
+        k[0]--;
+        if(k[0] == 0) {
+            k[1] =  root.val;
+            return;
+        }
+        
+        
+        kthSmallest_(root.right, k);   
+    }
+
+    // 2. Level UP Approach
+    // o(log (h) + k)
+    int kthSmallestAns = -1;
+    int kth = 0;
+    public boolean kthSmallest_(TreeNode root) {
+        
+        if(root == null) return false;
+        
+        if(kthSmallest_(root.left)) return true;
+        
+        if(--kth == 0) {
+            kthSmallestAns = root.val;
+            return true;
+        }
+        
+        if(kthSmallest_(root.right)) return false;
+        
+        return false;
+    }
+    public int kthSmallest(TreeNode root, int k) {
+        
+        kth = k;
+        kthSmallest_(root);
+        
+        return kthSmallestAns;
+    }
+
+    // 3. Iteratively Using Stack
+    public void pushAllLeftNodes(Stack<TreeNode> st, TreeNode node) {
+
+        while(node != null) {
+            st.push(node);
+            node = node.left;
+        }
+    }
+    
+    public int kthSmallest(TreeNode root, int k) {
+        Stack<TreeNode> st = new Stack<>();
+
+        pushAllLeftNodes(st,root);
+        //push all left elts for inorder
+        while(--k != 0) {
+            TreeNode rNode = st.pop();
+            // now push right subtree elts of rNode
+            pushAllLeftNodes(st,rNode.right);
+        }
+
+        return st.pop().val; // return kth element
+    }
+
+
 }

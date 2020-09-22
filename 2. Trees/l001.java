@@ -505,4 +505,47 @@ public class l001 {
             st2 = new Stack<> ();
         }
     }
+
+    public static class allSolutionPair {
+
+        int height = 0;
+        int size = 0;
+        boolean find = false;
+
+        int ciel = (int) 1e8;
+        int floor = -(int) 1e8;
+
+        Node pred = null; // predecessor
+        Node succ = null; // succesor
+        Node prev = null; // previous
+    }
+
+    public static void allSolutions(Node node, int level, int data, allSolutionPair pair) {
+
+        if(node == null) return;
+
+        pair.height = Math.max(pair.height,level);
+        pair.size++;
+        pair.find = pair.find || node.data == data;
+
+        if(node.data > data) pair.ceil = Math.min(pair.ceil, node.data);
+        //  ceil will be the minimum value of all bigger elts that is just bigger than data given
+
+        if(node.data < data) pair.floor = Math.max(pair.floor, node.data);
+        //  floor will be the maximum value of all smallest elts that is just smaller than data given
+
+        if(node.data == data) pair.pred = prev;
+        // for predecessor we have used previous pointer
+        // when node.data == data then its predecessor will be its previous elt
+
+        if(pair.prev != null && pair.prev.data == data) pair.succ = node;
+        // for successor elt we will check if previous elt is equal to data then set the cuurent elt as successor
+        // ie. we are setting the succ when its previous matches with the data
+
+        pair.prev = node; // for updating the previous
+
+        allSolutions(node.left, level+1, data, pair);
+        allSolutions(node.right, level+1, data, pair);
+    }
+
 }
