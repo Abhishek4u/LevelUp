@@ -130,11 +130,11 @@ public class l003_unionFind{
         for(int i = 0;i < N;i++) unionGraph[i] = new ArrayList<>();
         // initializing graph
 
+        // sorting a/weight
         Arrays.sort(graph, (a,b) -> {
             return a[2] - b[2]; // this - other,default, Increasing
             // return b[2]-a[2]; // other - this, reverse of default, Decreasing
         });
-        // sorting a/weight
 
         for(int i = 0; i < N;i++) par[i] = i;
 
