@@ -41,7 +41,7 @@ public class l004 {
     public static class primsPair implements Comparable<primsPair> {
 
         int vtx = 0;
-        int par = 0;
+        int par = 0; // par is parent (connecting vtx)
         int weight = 0;
 
         primsPair(int vtx, int par, int weight) {
@@ -54,7 +54,7 @@ public class l004 {
         @Override
         public int compareTo(primsPair other) {
 
-            return this.weight - other.weight;
+            return this.weight - other.weight;  // default sorting behaviour
         }
     }
 
@@ -90,7 +90,7 @@ public class l004 {
             // mark
             vis[rPair.vtx]  = true;
 
-            // insert elts
+            // insert all unvisited nbrs
             for(Edge e : graph[rPair.vtx]) {
 
                 if(!vis[e.v]) {
@@ -150,7 +150,7 @@ public class l004 {
     public static class dijPair implements Comparable<dijPair> {
 
         int vtx = 0;
-        int par = 0;
+        int par = 0; // other connecting vtc
         int weight = 0;
         int wsf = 0; // weight so far
 
@@ -168,8 +168,49 @@ public class l004 {
         }
     }
 
-    // code is same as prims Code but only 1 condition changes 
+    // code is same as prims Code but only 1 condition changes (in dijkstra_2())
     public static void dijkstra(int src, int N, ArrayList<Edge>[] graph) {
+        
+        ArrayList<Edge>[] dijGraph = new ArrayList[N];
+        for(int i = 0; i < N;i++) dijGraph[i] = new ArrayList<> ();
+
+        boolean vis[] = new boolean[N];
+
+        PriorityQueue<dijPair> pq = new PriorityQueue<> ();
+        pq.add( new dijPair(src, -1, 0, 0));
+
+        int EdgeCount = 0;
+
+        while(EdgeCount != N-1) {
+
+            dijPair rPair = pq.remove();
+
+            // cycle check
+            if(vis[rPair.vtx]) continue;
+
+            if(rPair.par != -1) {
+
+                addEdge(dijGraph, rPair.vtx, rPair.par, rPair.weight);
+                EdgeCount++;
+            }
+
+            // mark
+            vis[rPair.vtx] = true;
+
+            // insert all unvisited nbrs
+            for(Edge e : graph[rPair.vtx]) {
+
+                if(!vis[e.v] ) {
+
+                    pq.add(new dijPair(e.v, rPair.vtx, e.w, rPair.wsf + e.w));
+                    // weight so far of current edge will be weight from where its coming + own weight
+                }
+            } 
+        }
+        display(N, dijGraph);
+    }
+
+    public static void dijkstra_02(int src, int N, ArrayList<Edge>[] graph) {
         
         ArrayList<Edge>[] dijGraph = new ArrayList[N];
         for(int i = 0; i < N;i++) dijGraph[i] = new ArrayList<> ();
@@ -204,7 +245,7 @@ public class l004 {
             for(Edge e : graph[rPair.vtx]) {
 
                 if(!vis[e.v] && rPair.wsf + e.w < costArray[e.v]) {
-                    // wsf from that edge is less than stored 1 then change
+                    // wsf from curr edge is less than stored weight in costArray[] then change
                     costArray[e.v] = rPair.wsf = e.w;
 
                     pq.add(new dijPair(e.v, rPair.vtx, e.w, rPair.wsf + e.w));
