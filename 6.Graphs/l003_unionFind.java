@@ -92,7 +92,7 @@ public class l003_unionFind{
     }
 
     // if you want to use merge using comparing then use this 
-    // otherwise upper on is smaller and better to understand
+    // otherwise upper one is smaller and better to understand
     public static void unionFind2_withMergeFxn(int[][] graph) {
     
         for(int i = 0;i < N;i++) unionGraph[i] = new ArrayList<>();

@@ -99,7 +99,7 @@ public class l002_directedGraph {
             }
         }
 
-        if(ans.size() != 0) {
+        if(ans.size() != N) {
             System.out.println("Cycle found");
             // because we cannot traverse all vtx bcz they depend on each other
 
@@ -134,7 +134,7 @@ public class l002_directedGraph {
 
         ArrayList<Integer> ans = new ArrayList<>();
 
-        for(int i =0 ; i < N;i++) {
+        for(int i = 0 ; i < N;i++) {
 
             if(!vis[i]) topoDFS(i, vis, ans);
         }

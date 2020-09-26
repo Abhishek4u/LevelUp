@@ -515,4 +515,182 @@ public class questions {
         
     }
 
+    // Leetcode 160. Intersection of Two Linked Lists
+    // https://leetcode.com/problems/intersection-of-two-linked-lists/
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if(headA == null || headB == null) return null;
+        
+        ListNode tail = headA;
+        
+        while(tail.next != null) tail = tail.next;
+        
+        tail.next = headB; // connect the lists to make a cycle
+        // now detect the cycle point ans return that point
+        
+        ListNode ans = detectCycle(headA);
+        
+        // now correct the nodes (ie. break the nodes again)
+        tail.next = null;
+        
+        return ans;
+    }
+
+    // Leetcode 92. Reverse Linked List II (In range)
+    // https://leetcode.com/problems/reverse-linked-list-ii/
+
+    // 1. (FAR FAR EASY THAN LEVELUP'S CODE)------------------------
+    ListNode nHead = null, nTail = null;
+    public void addFirst(ListNode node) {
+        
+        if(nHead == null) {
+            nHead = node;
+            nTail = node;
+            
+        } else {
+            node.next = nHead;
+            nHead = node;
+        }
+    }
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        
+        if(head == null || head.next == null || m == n) return head;
+        
+        ListNode curr = head;
+        ListNode prev = null;
+        
+        int i = 1;
+        
+        while(i < m) {
+            i++;
+            prev = curr;
+            curr = curr.next;
+        }
+        
+        while(i <= n) {
+            ListNode next = curr.next;
+            curr.next = null; // to break the connection
+            addFirst(curr);
+            curr = next; 
+            i++;
+        }
+        
+        if(prev != null) {
+            prev.next = nHead;
+            nTail.next = curr;
+            
+        } else {
+            head = nHead;
+            nTail.next = curr;
+        }
+        return head;
+    }
+    // ---------------------------------------------------------------- //
+    // 2. LevelUP Code ( Aug29) 
+    ListNode th = null, tt = null; // head and tail
+    
+    public void addFirst(ListNode node) {
+        
+        if(th == null) {
+            th = node;
+            tt = node;
+        } else {
+            node.next = th;
+            th = node;
+        }
+        
+    }
+    public ListNode reverseBetween(ListNode head, int n, int m) {
+        if (head == null || head.next == null || n == m)
+            return head;
+
+        int i = 1;
+        ListNode curr = head, prev = null;
+        
+        while(curr!=null && i < n){
+            prev = curr;
+            curr = curr.next;
+            i++;
+        }
+            
+        while(i>=n && i<=m){
+            ListNode next = curr.next;
+            curr.next = null;
+
+            addFirst(curr);
+            curr = next;
+            i++;
+        }
+
+        // now connect the list after changing
+        if(prev!=null){
+            
+            prev.next = th; // head
+            tt.next = curr; //tail
+            
+        }else{
+            // if i == 1 means list is changed from starting
+            head = th;
+            tt.next = curr;
+        }
+
+            
+        return head;
+    }
+
+    // Leetcode 138. Copy List with Random Pointer
+    // https://leetcode.com/problems/copy-list-with-random-pointer/
+
+    // 31stAug
+    public void copyNodes(Node head) {
+        Node curr = head;
+        
+        while(curr != null) {
+            Node next = curr.next;
+            Node newNode = new Node(curr.val);
+            
+            curr.next = newNode;
+            newNode.next = next;
+            
+            curr = next;
+        }
+    }
+    
+    public void setRandom(Node head) {
+        
+        Node curr = head;
+        
+        while(curr != null) {
+            if(curr.random != null) {
+                curr.next.random = curr.random.next;
+            }
+            curr = curr.next.next;
+        }
+    }
+    
+    public Node extractList(Node head) {
+        Node curr = head;
+        
+        Node dummy = new Node(-1);
+        Node prev = dummy;
+        
+        while(curr != null) {
+            Node next = curr.next.next;
+            
+            prev.next = curr.next;
+            curr.next = next;
+            
+            prev = prev.next;
+            curr = curr.next;
+        }
+        return dummy.next;
+    }
+    
+    public Node copyRandomList(Node head) {
+        copyNodes(head);
+        setRandom(head);
+        
+        return extractList(head);
+    }
+
 }
