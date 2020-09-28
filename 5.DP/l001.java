@@ -2,10 +2,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 public class l001 {
 
+    //---------------------------------------SEE PREVIOUS.java FILE FIRST---------------------------------//
+
     public static void main(String[] args) {
 
-        // solve1();
-        solve2();
+    
     }
 
     public static void print(int[] arr) {
@@ -25,312 +26,218 @@ public class l001 {
         System.out.println();
     }
 
-    public static int fibo(int n, int dp[]) {
-
-        if (n <= 1)
-            return dp[n] = n;
-
-        if (dp[n] != 0)
-            return dp[n];
-
-        int a = fibo(n - 1, dp);
-        int b = fibo(n - 2, dp);
-
-        return a + b;
-    }
-
-    public static int fibo_DP(int n, int dp[]) {
-
-        int N = n;
-        for (n = 0; n <= N; n++) {
-
-            if (n <= 1) {
-                dp[n] = n;
-                continue;
-            }
-
-            int a = dp[n - 1]; // fibo(n-1,dp);
-            int b = dp[n - 2]; // fibo(n-2,dp);
-
-            dp[n] = a + b;
-
-        }
-
-        return dp[N];
-    }
-
-    public static int fibo_Optimized(int N) {
-
-        int a = 0;
-        int b = 1;
-
-        for (int n = 2; n <= N; n++) {
-
-            int sum = a + b;
-            a = b;
-            b = sum;
-
-        }
-        return b;
-    }
-
-    // HORIZONTAL, VERTICAL
-    public static int mazePathsHV(int sr, int sc, int er, int ec, int dp[][]) {
-
-        // in fxn er & ec is sent as (n - 1) & (m - 1) so used = here in condition
-        if (sr == er && sc == ec) {
+    public static int mazePath_Multi(int sr,int sc,int er,int ec,int[][] dp,int[][] dir){
+        if(sr==er && sc == ec){
             return dp[sr][sc] = 1;
         }
+
+        if(dp[sr][sc]!=0) return dp[sr][sc];
+        
         int count = 0;
+        for(int d = 0; d<dir.length;d++){   
+           for(int jump = 1;jump <= Math.max(er,ec) ; jump++){
+               int r = sr + jump*dir[d][0];
+               int c = sc + jump*dir[d][1];
 
-        // in fxn er & ec is sent as (n - 1) & (m - 1) so used = here in condition
-        if (sc + 1 <= ec) {
-            count += mazePathsHV(sr, sc + 1, er, ec, dp);
-        }
-
-        if (sr + 1 <= er) {
-            count += mazePathsHV(sr + 1, sc, er, ec, dp);
+               if(r>=0 && c>=0 && r <= er && c<=ec)
+                  count+=mazePath_Multi(r,c,er,ec,dp,dir);
+               else break;
+           }
         }
 
         return dp[sr][sc] = count;
     }
 
-    public static int mazePathsHV_DP(int sr, int sc, int er, int ec, int dp[][]) {
-
-        for (int i = er; i >= 0; i--) {
-
-            for (int j = ec; j >= 0; j--) {
-
-                if (i == er && j == ec) {
-                    dp[i][j] = 1;
-                    continue;
+    public static int mazePath_MultiDP(int sr,int sc,int er,int ec,int[][] dp,int[][] dir){
+               
+        for(sr = er ; sr>=0 ; sr--){
+            for(sc = ec; sc>=0 ; sc--){
+                if(sr==er && sc == ec){
+                   dp[sr][sc] = 1;
+                   continue;
                 }
-
+        
+                
                 int count = 0;
-
-                if (j + 1 <= er) {
-                    count += dp[i][j + 1]; // mazePathsHV(sr, sc + 1, er, ec, dp);
+                for(int d = 0; d<dir.length;d++){   
+                   for(int jump = 1;jump <= Math.max(er,ec) ; jump++){
+                       int r = sr + jump*dir[d][0];
+                       int c = sc + jump*dir[d][1];
+        
+                       if(r>=0 && c>=0 && r <= er && c<=ec)
+                          count+=dp[r][c];
+                       else break;
+                   }
                 }
-
-                if (i + 1 <= ec) {
-                    count += dp[i + 1][j]; // mazePathsHV(sr + 1, sc, er, ec, dp);
-                }
-
+        
                 dp[sr][sc] = count;
             }
         }
+
         return dp[0][0];
     }
 
-    // HORIZONTAL, VERTICAL, DIAGONAL
-    public static int mazePathsHVD(int sr, int sc, int er, int ec, int dp[][]) {
-
-        if (sr == er && sc == ec) {
-            return dp[sr][sc] = 1;
-        }
-        int count = 0;
-
-        if (sc + 1 <= er) {
-            count += mazePathsHV(sr, sc + 1, er, ec, dp);
-        }
-
-        if (sr + 1 <= er) {
-            count += mazePathsHV(sr + 1, sc, er, ec, dp);
-        }
-
-        if (sr + 1 <= er && sc + 1 <= er) {
-            count += mazePathsHV(sr + 1, sc + 1, er, ec, dp);
-        }
-
-        return dp[sr][sc] = count;
-    }
-
-    public static int mazePathsHVD_DP(int sr, int sc, int er, int ec, int dp[][]) {
-
-        for (int i = er; i >= 0; i--) {
-
-            for (int j = ec; j >= 0; j--) {
-
-                if (i == er && j == ec) {
-                    dp[i][j] = 1;
-                    continue;
-                }
-
-                int count = 0;
-
-                if (j + 1 <= er) {
-                    count += dp[i][j + 1]; // mazePathsHV(sr, sc + 1, er, ec, dp);
-                }
-
-                if (i + 1 <= ec) {
-                    count += dp[i + 1][j]; // mazePathsHV(sr + 1, sc, er, ec, dp);
-                }
-
-                if (i + 1 <= er && j + 1 <= er) {
-                    count += dp[i + 1][j + 1]; // mazePathsHV(sr + 1, sc + 1, er, ec, dp);
-                }
-
-                dp[sr][sc] = count;
-            }
-        }
-        return dp[0][0];
-    }
-
-    public static void solve1() {
-
-        // int n = 10;
-        // int dp[] = new int[n + 1];
-
-        // System.out.println(fibo(n, dp));
-        // System.out.println(fibo_DP(n, dp));
-        // System.out.println(fibo_Optimized(n));
-        // print(dp);
-
-        int n = 5;
-        int[][] dp = new int[n][n];
-
-        // System.out.println(mazePathsHV(0, 0, n - 1, n - 1, dp));
-        // System.out.println(mazePathsHV_DP(0, 0, n - 1, n - 1, dp));
-
-        System.out.println(mazePathsHVD(0, 0, n - 1, n - 1, dp));
-        System.out.println(mazePathsHVD_DP(0, 0, n - 1, n - 1, dp));
-
-        print2D(dp);
-
-    }
-
-    // ----------------------------BOARD VARIATION--------------------------
-
-    public static int boardPath1(int si, int ei, int dp[]) {
-
-        if (si == ei) {
-            return dp[si] = 1;
-        }
-
-        if (dp[si] != 0) {
-
-            return dp[si];
+    public static int boardPath(int sp,int ep,int[] dp){
+        if(sp==ep){
+            return dp[sp] = 1;
         }
 
         int count = 0;
-
-        for (int dice = 1; dice <= 6 && si + dice <= ei; dice++) {
-
-            count += boardPath1(si + dice, ei, dp);
-
+        for(int dice = 1;dice <= 6 && sp+dice <=ep;dice++){
+            count+= boardPath(sp+dice,ep,dp);
         }
 
-        return dp[si] = count;
+        return dp[sp] = count;
     }
 
-    public static int boardPath1_DP(int si, int ei, int dp[]) {
+    public static int boardPath_DP(int sp,int ep,int[] dp){
 
-        for (si = ei; si >= 0; si--) {
-
-            if (si == ei) {
-                dp[si] = 1;
+        for(sp=ep; sp >= 0 ; sp--){
+            if(sp==ep){
+                dp[sp] = 1;
                 continue;
             }
+    
             int count = 0;
-
-            for (int dice = 1; dice <= 6 && si + dice <= ei; dice++) {
-
-                count += dp[si + dice]; // boardPath1(si + i, ei,dp);
+            for(int dice = 1;dice <= 6 && sp+dice <= ep;dice++){
+                count+= dp[sp + dice];//boardPath(sp+dice,ep,dp);
             }
-
-            dp[si] = count;
+    
+            dp[sp] = count;            
         }
+
         return dp[0];
     }
 
     public static int boardPath1_Opti(int si, int ei, int dp[]) {
 
-        LinkedList<Integer> ll = new LinkedList<> ();
+        // We will use linkedlist by observation of dp that
+        // we can store 7 elts in ll ans then if we want to add then 
+        // add first node of ll twice and subtract that by lastnode 
+        // and now remove that last node
+        LinkedList<Integer> ll = new LinkedList<>();
 
-        for(si = ei ; si >= 0;si--) {
+        for(si = ei; si >= 0;si--) {
 
-            if(si >= ei - 1 ) {
+            if(si >= ei - 1) {
+                // for first 2 elts base case value is 1(observe in dp)
                 ll.addFirst(1);
                 continue;
-            }
+            } 
 
             if(ll.size() <= 6) ll.addFirst(ll.getFirst() * 2);
+            // new dp value is twice of last value
 
             else {
+                // size is 7 now 
+                int lVal = ll.removeLast(); // last value
+                int fVal = ll.getFirst() ; // first value
 
-                int lVal = ll.removeLast();
-
-                ll.addFirst(ll.getFirst() * 2 - lVal);
+                ll.addFirst(fVal * 2 - lVal);
             }
-            
         }
         return ll.getFirst();
-
-
     }
 
-    public static int boardPath_Moves(int si, int ei, int[] moves, int dp[]) {
+    // Leetcode 746 Min Cost Climbing Stairs
+    // https://leetcode.com/problems/min-cost-climbing-stairs/
 
-        if (si == ei) {
-            return dp[si] = 1;
-        }
+    public int minCostClimbingStairs(int[] cost, int n ,int[] dp) {
+        
+        if(n <= 1) return dp[n] = cost.length;
 
-        if (dp[si] != 0) {
-            return dp[si];
-        }
+        if(dp[n] != 0) return dp[n];
 
-        // if curr idx value is greater then for loop will break
-        // so sort them before using
-        Arrays.sort(moves);
+        int a = minCostClimbingStairs(cost, n - 1, dp);
+        int b = minCostClimbingStairs(cost, n - 2, dp);
 
-        int count = 0;
-
-        for (int i = 0; i < moves.length && si + moves[i] <= ei; i++) {
-
-            count += boardPath_Moves(si + moves[i], ei, moves, dp);
-        }
-        return dp[si] = count;
-
+        return dp[n] = Math.min(a,b) + ( n != cost.length ? cost[n] : 0);
     }
 
-    public static int boardPath_MovesDP(int si, int ei, int[] moves, int dp[]) {
-
-        // if curr idx value is greater then for loop will break
-        // so sort them before using
-        Arrays.sort(moves);
-
-        for (si = ei; si >= 0; si--) {
-
-            if (si == ei) {
-                dp[si] = 1;
+    public int minCostClimbingStairs_DP(int[] cost, int n ,int[] dp) {
+        
+        int N = n;
+        for(n = 0; n <= N ; n++){
+            if(n <= 1) {
+                dp[n] = cost[n];
                 continue;
             }
 
-            int count = 0;
+            int a = minCostClimbingStairs(cost, n - 1, dp);
+            int b = minCostClimbingStairs(cost, n - 2, dp);
 
-            for (int i = 0; i < moves.length && si + moves[i] <= ei; i++) {
-
-                count += dp[si + moves[i]]; // boardPath_Moves(si + moves[i], ei, moves, dp);
-            }
-            dp[si] = count;
+            dp[n] = Math.min(a,b) + (n != cost.length ? cost[n] : 0);
         }
-
-        return dp[0];
+        return dp[n];
     }
-    
-    public static void solve2() {
 
-        int n = 10;
-        int dp[] = new int[n + 1];
+    public int minCostClimbingStairs_opti(int[] cost,int n, int dp[]) {
+        
+        int a = cost[0];
+        int b = cost[1];
+        // base cases bcz dp filling starts from start of array
+        for(int idx = 2;idx <= n ;idx++) { 
 
-        System.out.println(boardPath1(0, n, dp));
-        System.out.println(boardPath1_DP(0, n, dp));
-        System.out.println(boardPath1_Opti(0, n, dp));
+            int temp = Math.min(a,b) + (idx != n ? cost[idx] : 0);
+            a = b;
+            b = temp;
+        }
+        return b;
+    }
 
-        int moves[] = { 2, 7, 5, 3 };
-        // System.out.println(boardPath_Moves(0, n, moves, dp));
-        // System.out.println(boardPath_MovesDP(0, n, moves, dp));
+    public  int minCostClimbingStairs(int[] cost) {
+        int n = cost.length;
+        int[] dp = new int[cost.length + 1];
 
+        int ans = minCostClimbingStairs_opti(cost,n,dp);
+        // int ans = minCostClimbingStairs_DP(cost,n,dp);
+        return ans;
+    }
+
+    // https://www.geeksforgeeks.org/friends-pairing-problem/
+
+    public static int friendsPairing(int n,int[] dp){
+        if(n <= 1) return dp[n] = 1;
+
+        if(dp[n] != 0) return dp[n];
+
+        int single = friendsPairing(n-1, dp);
+        int pairUp = friendsPairing(n-2, dp) * (n - 1);
+
+        return dp[n] = single + pairUp;
+    }
+
+    public static int friendsPairing_DP(int n,int[] dp){
+        // dp of size(n+1)
+        int N = n;
+        for(n = 0; n <= N;n++) {
+
+            if(n <= 1) {
+                dp[n] = 1;
+                continue;
+            }
+
+            int single = friendsPairing(n-1, dp);
+            int pairUp = friendsPairing(n-2, dp) * (n - 1);
+
+            dp[n] = single + pairUp;
+
+        }
+        return dp[n];
+    }
+
+    public static int friendsPairing_opti(int n) {
+
+        int a = 1, b =  1;
+        for(int n = 2; n <= N;n++) {
+            
+            int temp = (n-1)*a; // pair up
+            temp = temp + b; // single
+            
+            a = b;
+            b = temp;
+        }
+        return b;
     }
 
 }
