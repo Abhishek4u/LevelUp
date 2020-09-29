@@ -5,7 +5,8 @@ public class l001 {
     //---------------------------------------SEE PREVIOUS.java FILE FIRST---------------------------------//
 
     public static void main(String[] args) {
-
+        int n = 4, k = 2;
+        System.out.println(count_of_ways(n,k,new int[n+1][n+1]));
     
     }
 
@@ -203,6 +204,7 @@ public class l001 {
 
         int single = friendsPairing(n-1, dp);
         int pairUp = friendsPairing(n-2, dp) * (n - 1);
+        // can pair up with n-1 persons so multiplied
 
         return dp[n] = single + pairUp;
     }
@@ -228,8 +230,9 @@ public class l001 {
 
     public static int friendsPairing_opti(int n) {
 
+        int N = n;
         int a = 1, b =  1;
-        for(int n = 2; n <= N;n++) {
+        for(n = 2; n <= N;n++) {
             
             int temp = (n-1)*a; // pair up
             temp = temp + b; // single
@@ -238,6 +241,24 @@ public class l001 {
             b = temp;
         }
         return b;
+    }
+
+    public static int count_of_ways(int n, int k, int[][] dp)  {
+
+        if(k > n) return 0; //  every can not be filled so return 0
+        if(k == 1 || k == n) {
+            // 1 space is available or 
+            // no of people = k rooms so there will be 1 way only
+            return dp[n][k] = 1;
+        }
+
+        if(dp[n][k] != 0) return dp[n][k];
+
+        int ownSet = count_of_ways(n-1, k-1, dp);// will make own team 
+        int partOfSet = count_of_ways(n-1, k, dp) * k;
+        // will become part of team and can go in any team so multiplied by k
+
+        return dp[n][k] = ownSet + partOfSet;
     }
 
 }
