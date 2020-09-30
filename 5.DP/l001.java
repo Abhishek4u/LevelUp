@@ -6,7 +6,9 @@ public class l001 {
 
     public static void main(String[] args) {
         int n = 4, k = 2;
-        System.out.println(count_of_ways(n,k,new int[n+1][n+1]));
+        // System.out.println(count_of_ways(n,k,new int[n+1][n+1]));
+
+        minDistance("horse","ros");
     
     }
 

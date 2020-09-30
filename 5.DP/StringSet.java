@@ -316,6 +316,238 @@ public class StringSet {
         return dp[s.length()][t.length()];
     }
 
+    //-----------------------------30Sep-----------------------------
 
+    // Leetcode 940. Distinct Subsequences II
+    // https://leetcode.com/problems/distinct-subsequences-ii/
+
+    public int distinctSubseqII(String S) {
+        int n = S.length();
+        if(n == 0) return 0;
+        
+        int mod = (int) 1e9 + 7;
+        
+        S = '$' + S; // for simplicty of 0 index char
+        // it will act as empty subsequence 
+        
+        int dp[] = new int[n+1];
+        int []locc = new int[26];
+        // last location of characters
+        
+        Arrays.fill(locc,-1);
+        dp[0] = 1; // empty subsequence
+        
+        for(int i = 1; i <= n;i++) { 
+            char ch = S.charAt(i);
+            
+            dp[i] = (dp[i-1] * 2) % mod;
+            // either previous subsquences will come
+            // or curr elt will join these subsequences
+            
+            if(locc[ch - 'a'] != -1) {
+                // remove duplicate subsequences (equals to locc[i] - 1) (See copy)
+                dp[i] = ( dp[i] % mod - dp[locc[ch - 'a'] - 1] % mod + mod )% mod;
+                // add mod (its a property when you do subtract 
+                // add mod bcz value can become -ve)
+            }
+            locc[ch - 'a'] = i;
+            // update new location
+        }
+        return dp[n] - 1;
+        // remove empty subsequence
+    }
+
+    // Count subsequences of type a^i b^j c^k
+    // https://practice.geeksforgeeks.org/problems/count-subsequences-of-type-ai-bj-ck/0
+
+    public static int aibjck(String str) {
+	    
+	    int aCount = 0; // a
+	    int bCount = 0; // ab
+	    int cCount = 0; // abc
+	    
+	    for(int i = 0; i < str.length(); i++) {
+	        
+	        char ch = str.charAt(i);
+	        
+	        if(ch == 'a') aCount = aCount + ( 1 + aCount); // notIncludeSelf + IncludeSelfWith( alone | prevSet)
+	        else if(ch == 'b') bCount = bCount + (aCount + bCount); // notIncludeSelf + IncludeSelfWith( a | prevSet)
+	        else if(ch == 'c') cCount = cCount + (bCount + cCount); // notIncludeSelf + IncludeSelfWith( b | prevSet)
+	        
+	    }
+	    return cCount;
+	}
+
+    // Leetcode 72. Edit Distance
+    // https://leetcode.com/problems/edit-distance/
+    
+    public int minDistance_(String s1, String s2, int n, int m, int dp[][]) {
+        
+        if( n == 0 || m == 0 ) {
+            return dp[n][m] = n == 0 ? m : n;
+        }
+        
+        if(dp[n][m] != 0) return dp[n][m];
+        
+        if(s1.charAt(n - 1) == s2.charAt(m - 1)) return dp[n][m] = minDistance_(s1,s2,n-1,m-1,dp);
+        else {
+            int insert = minDistance_(s1,s2,n,m-1,dp);
+            int delete = minDistance_(s1,s2,n-1,m,dp);
+            int replace = minDistance_(s1,s2,n-1,m-1,dp);
+            
+            return dp[n][m] = Math.min(insert, Math.min(delete, replace)) + 1;
+        }
+    }
+
+    public int minDistance_DP(String s1, String s2, int n, int m, int dp[][]) {
+        
+        int N = n, M = m;
+        for(n = 0; n <= N;n++) {
+            for(m = 0; m <= M;m++) {
+
+                if( n == 0 || m == 0 ) {
+                    dp[n][m] = n == 0 ? m : n;
+                    continue;
+                }
+                
+                if(s1.charAt(n - 1) == s2.charAt(m - 1)) {
+                    
+                    dp[n][m] = minDistance_(s1,s2,n-1,m-1,dp);
+                } else {
+
+                    int insert = minDistance_(s1,s2,n,m-1,dp);
+                    int delete = minDistance_(s1,s2,n-1,m,dp);
+                    int replace = minDistance_(s1,s2,n-1,m-1,dp);
+                    
+                    dp[n][m] = Math.min(insert, Math.min(delete, replace)) + 1;
+                }
+            }
+        }
+        return dp[N][m];
+    }
+
+    public int minDistance(String word1, String word2) {
+        
+        int n = word1.length(), m = word2.length();
+        int dp[][] = new int[n+1][m+1];
+
+        // minDistance_(word1, word2, n, m, dp);
+        minDistance_DP(word1, word2, n, m, dp);
+        print2D(dp);
+        return 1;
+
+    } 
+
+    // GFG LCS of three strings
+    // https://practice.geeksforgeeks.org/problems/lcs-of-three-strings/0
+
+    public static int LCS(String a, String b, String c, int i, int j, int k, int dp[][][]) {
+	    
+	    if(i == 0 || j == 0 || k == 0) return dp[i][j][k] = 0;
+	    
+	    if(dp[i][j][k] != 0) return dp[i][j][k];
+	    
+	    if(a.charAt(i - 1) == b.charAt(j - 1) && b.charAt(j - 1) == c.charAt(k - 1)) {
+	        
+	        return dp[i][j][k] = 1 + LCS(a,b,c,i-1,j-1,k-1,dp);
+	        
+	    } else {
+	        int p = LCS(a,b,c, i-1, j, k, dp);
+	        int q = LCS(a,b,c, i, j-1, k, dp);
+	        int r = LCS(a,b,c, i, j, k-1, dp);
+	        
+	        return dp[i][j][k] = Math.max(p,Math.max(q,r));
+	    }
+	}
+
+    // In this we have used static strings for time complexity
+    public static int LCS_DP(int i, int j, int k, int dp[][][]) {
+	    int I = s1.length(), J = s2.length(), K = s3.length(); 
+	    
+	    for(i = 0; i <= I; i++) {
+            for(j = 0; j <= J; j++) {
+                for(k = 0; k <= K; k++) {
+                    
+            	    if(i == 0 || j == 0 || k == 0){
+            	        dp[i][j][k] = 0;
+            	        continue;
+            	    }
+            	    if(s1.charAt(i - 1) == s2.charAt(j - 1) && s2.charAt(j - 1) == s3.charAt(k - 1)) {
+            	        
+            	         dp[i][j][k] = 1 + dp[i-1][j-1][k-1];
+            	        
+            	    } else {
+            	        int p = dp[i-1][j][k];
+            	        int q = dp[i][j-1][k];
+            	        int r = dp[i][j][k-1];
+            	        
+            	        dp[i][j][k] = Math.max(p,Math.max(q,r));
+            	    }
+                }
+            }
+	    }
+	    return dp[I][J][K];
+	}
+
+    // Leetcode 44. Wildcard Matching
+    // https://leetcode.com/problems/wildcard-matching/
+
+    public int wildCardMatching(String str1,String str2,int n,int m,int[][] dp){
+        
+        if(n == 0 && m == 0) return dp[n][m] = 1;
+        else if(n == 0 || m == 0) {
+            if(m == 1 && str2.charAt(m-1) == '*') return dp[n][m] = 1;
+            return dp[n][m] = 0;
+        }
+        
+        if(dp[n][m] != -1) return dp[n][m];
+        
+        char ch1 = str1.charAt(n-1);
+        char ch2 = str2.charAt(m-1);
+        int val = -1;
+        
+        if(ch1 == ch2 || ch2 == '?')
+            val = wildCardMatching(str1, str2, n-1, m-1, dp);
+        
+        else if(ch2 == '*') {
+            boolean res = false;
+            res = res || wildCardMatching(str1, str2, n-1, m, dp) == 1;
+            res = res || wildCardMatching(str1, str2, n, m-1, dp) == 1;
+            
+            val = res ? 1 : 0;
+        }
+        else val = 0;
+        
+        return dp[n][m] = val;
+    }
+    
+    public String removeExtraStar(String s) {
+        if(s.length() == 0) return "";
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(s.charAt(0));
+        int i = 1;
+        while( i < s.length()) {
+            
+            while(i < s.length() && s.charAt(i) == '*' && s.charAt(i-1) == s.charAt(i)) i++;
+            
+            if(i < s.length()) sb.append(s.charAt(i));
+            i++;
+        }
+        return sb.toString();
+    }
+    
+    public boolean isMatch(String s, String p) {
+        p = removeExtraStar(p);
+        
+        int n = s.length();
+        int m = p.length();
+        
+        int dp[][] = new int[n+1][m+1];
+        for(int []a : dp) Arrays.fill(a,-1);
+        
+        return wildCardMatching(s,p,n,m,dp) == 1;
+        
+    }
 
 }
