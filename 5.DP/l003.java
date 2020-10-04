@@ -144,6 +144,80 @@ public class l003 {
         return (int)numDecodings_(s,0,dp);
     }
 
+    // --------------------------OCT-3-CODES(LIS class)---------------------------- //
 
+	//  Largest square formed in a matrix 
+    // https://practice.geeksforgeeks.org/problems/largest-square-formed-in-a-matrix/0
 
+	public static int maxSquare(int arr[][], int i, int j,int dp[][]) {
+
+		if(dp[i][j] != 0) return dp[i][j];
+	    
+	    int minSize = (int) 1e9;
+	    
+	    int dir[][] = {{1,0}, {0,1}, {1,1}};
+	    
+	    for(int d[] : dir) {
+	        int x = i + d[0];
+	        int y = j + d[1];
+	        
+	        if(x >= 0 && y >= 0 && x < arr.length && y < arr[0].length) {
+	            
+	            if(arr[x][y] == 0) {
+	                minSize = 0;
+	                break;
+	                
+	            } else {
+	                minSize = Math.min(minSize, maxSquare(arr,x,y,dp));
+	            }
+	        } else {
+                minSize = 0; 
+                // it can't be expanded bcz all elts are not present for making square
+            }
+
+	    }
+	    
+	    return dp[i][j] =  minSize == 1e9 ? 1 : minSize + 1;
+	}
+
+    public static int findMax(int arr[][]) {
+	    int n = arr.length,m = arr[0].length;
+	    
+	    int max = 0;
+		int dp[][] = new int[n][m];
+	    
+	    for(int i = 0; i < n;i++) {
+	        for(int j = 0; j < m;j++) {
+	            
+	            if(arr[i][j] == 1) {
+	                max = Math.max(maxSquare(arr,i,j,dp), max);
+	            }
+	        }
+	    }
+	    return max;
+	}
+
+    // Leetcode 413. Arithmetic Slices
+    // https://leetcode.com/problems/arithmetic-slices/
+
+    public int numberOfArithmeticSlices(int[] A) {
+        int n = A.length;
+        if(n < 3) return 0;
+        
+        int ans = 0;
+        int count = 0;
+        
+        for(int i = 1; i < n - 1; i++) {
+            
+            int d1 = A[i] - A[i-1];
+            int d2 = A[i+1] - A[i];
+            
+            if(d1 == d2) ans += (++count);
+            else count = 0;
+        }
+        return ans;
+    }
+
+    // Leetcode 1027
+    // Leetcode 1218
 }

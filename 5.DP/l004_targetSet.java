@@ -296,7 +296,7 @@ public class l004_targetSet {
         return dp[N][W] = maxVal;
         
     }
-    // 1d dp
+    // 1d dp ( coins infinite combination logic)
     public static int knapSack_unbounded_DP(int N, int W, int val[], int wt[],int[][] dp){
         dp[0] = 0;
         for(int i = 0;i<N;i++){
@@ -318,7 +318,7 @@ public class l004_targetSet {
         return knapSack_unbounded_DP(N,W,val,wt,dp);
     }
 
-    // Using 1d dp recursion ( coins permutation logic)
+    // Using 1d dp recursion ( coins infinite permutation logic)
     public static int unboundedKnapsack(int w,int val[], int wt[], int dp[]) {
         if(w == 0) return dp[w] =  0;
         
