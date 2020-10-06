@@ -1,23 +1,10 @@
-11116
-100000000 0 6 18 30 51 86 136 586 11116 
-0 100000000 0 24 48 90 160 260 1160 22220 
-0 0 100000000 0 36 99 186 336 1686 33276 
-0 0 0 100000000 0 84 165 365 2145 36003 
-0 0 0 0 100000000 0 105 255 1605 33195 
-0 0 0 0 0 100000000 0 350 3500 63090 
-0 0 0 0 0 0 100000000 0 2250 54900 
-0 0 0 0 0 0 0 100000000 0 105300 
-0 0 0 0 0 0 0 0 100000000 0 
-0 0 0 0 0 0 0 0 0 100000000 
-
-11116
-0 0 6 18 30 51 86 136 586 11116 
-0 0 0 24 48 90 160 260 1160 22220 
-0 0 0 0 36 99 186 336 1686 33276 
-0 0 0 0 0 84 165 365 2145 36003 
-0 0 0 0 0 0 105 255 1605 33195 
-0 0 0 0 0 0 0 350 3500 63090 
-0 0 0 0 0 0 0 0 2250 54900 
-0 0 0 0 0 0 0 0 0 105300 
-0 0 0 0 0 0 0 0 0 0 
-0 0 0 0 0 0 0 0 0 0 
+27 , 105
+(1, 1)	null	(3, 3)	null	(7, 9)	null	(11, 21)	null	(27, 105)	
+null	null	null	null	null	null	null	null	null	
+null	null	(2, 2)	null	(6, 6)	null	(10, 14)	null	(26, 70)	
+null	null	null	null	null	null	null	null	null	
+null	null	null	null	(3, 3)	null	(7, 7)	null	(23, 35)	
+null	null	null	null	null	null	null	null	null	
+null	null	null	null	null	null	(4, 4)	null	(20, 20)	
+null	null	null	null	null	null	null	null	null	
+null	null	null	null	null	null	null	null	(5, 5)	

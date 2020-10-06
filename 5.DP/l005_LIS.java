@@ -342,9 +342,6 @@ public class l005_LIS {
     }
 
     // --------------------------OCT-5-CODES(LIS class)---------------------------- //
-    
-    //------------------------------------TODO----------------------------------//
-
 
     // Leetcode 1218. Longest Arithmetic Subsequence of Given Difference
 
@@ -354,7 +351,7 @@ public class l005_LIS {
         int maxLen = 0;
         for(int ele : arr) {
             int prevElt = ele - d;
-            // previous elt of current ap( a0 + d = a1 => a0 = a1 - d)
+            // previous elt of current ap( a0 + d = a1 is => a0 = a1 - d)
             
             hm.put(ele, hm.getOrDefault(prevElt, 0) + 1);
             maxLen = Math.max(maxLen, hm.get(ele));            
@@ -376,9 +373,13 @@ public class l005_LIS {
                 int diff = A[i] - A[j];
                 
                 int currLen = dp[i].getOrDefault(diff,0);
+                // present length of curr diff if present
+
                 int newLen = dp[j].getOrDefault(diff,1) + 1;
+                // new length
                 
                 dp[i].put(diff, Math.max(currLen, newLen));
+                // compare and put the maxlength of current difference
                 
                 len = Math.max(len, dp[i].get(diff));
             }
@@ -407,6 +408,8 @@ public class l005_LIS {
 	    
 	    return maxSum;
 	}
+
+    //------------------------------------TODO----------------------------------//
 
     // Leetcode 446
 
