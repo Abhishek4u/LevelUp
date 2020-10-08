@@ -1,10 +1,5 @@
-27 , 105
-(1, 1)	null	(3, 3)	null	(7, 9)	null	(11, 21)	null	(27, 105)	
-null	null	null	null	null	null	null	null	null	
-null	null	(2, 2)	null	(6, 6)	null	(10, 14)	null	(26, 70)	
-null	null	null	null	null	null	null	null	null	
-null	null	null	null	(3, 3)	null	(7, 7)	null	(23, 35)	
-null	null	null	null	null	null	null	null	null	
-null	null	null	null	null	null	(4, 4)	null	(20, 20)	
-null	null	null	null	null	null	null	null	null	
-null	null	null	null	null	null	null	null	(5, 5)	
+142
+34 50 142 
+0 8 66 
+0 0 50 
+

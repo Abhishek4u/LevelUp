@@ -1,3 +1,4 @@
+import java.util.Arrays;
 public class l006_cutType {
 
     public static void main(String[] args) {
@@ -6,7 +7,8 @@ public class l006_cutType {
 
     public static void solve() {
         // mcm();
-        minMaxValue();
+        // minMaxValue();
+        OBST();
     }
 
     public static void print(int[] arr){
@@ -86,6 +88,8 @@ public class l006_cutType {
 
     //------------------------------------OCT7------------------------------------//
 
+    // https://practice.geeksforgeeks.org/problems/brackets-in-matrix-chain-multiplication/0
+    
     public static int mcm_DP_String(int []arr, int SI, int EI, int[][] dp) {
 
         int n = arr.length;
@@ -301,6 +305,58 @@ public class l006_cutType {
         // filling with -1 bcz 0 can also be balloon(given in ques)
         
         return maxCoins(nums, 0, n-1, dp);        
+    }
+
+    // Optimal Binary Search Tree
+    // https://www.geeksforgeeks.org/optimal-binary-search-tree-dp-24/
+
+    // Note if you use level in this approach then it will give wrong answer
+    // To use level you have to use 3d dp as level will also change in recursion call
+    public static int OBST(int freq[], int si, int ei, int[][] dp, int[] prefixSum) {
+
+        if(dp[si][ei] != 0) return dp[si][ei];
+
+        int myRes = (int) 1e8;
+        for(int cut = si; cut <= ei; cut++) {
+
+            int leftTree = cut == si ? 0 : OBST(freq, si, cut-1, dp, prefixSum);
+            // if you call in cut == si then in rec call si > ei which is wrong
+            // so we handled this base case here
+            int rightTree = cut == ei ? 0 : OBST(freq, cut+1, ei, dp, prefixSum);
+            // if you call in cut == ei then in rec call si > ei which is wrong
+            // so we handled this base case here
+
+            int myAns = prefixSum[ei] - (si == 0 ? 0 : prefixSum[si - 1]);
+            // we used prefix array for increasing the count
+            // of child values( freq* lvl) according to ques
+
+            myAns = leftTree + myAns + rightTree;
+
+            myRes = Math.min(myRes, myAns);
+        }
+        return dp[si][ei] = myRes;
+    }
+
+    public static void OBST() {
+        int freq[] = {34,8,50};
+        int val[] = {10,12,20};
+
+        int n = val.length;
+
+        int dp[][] = new int[n][n];
+
+        int prefixSum[] = new int[n];
+
+        int prev = 0;
+        for(int i = 0; i < n;i++) {
+            prefixSum[i] = prev + freq[i];
+            prev = prefixSum[i];
+        }
+
+        System.out.println(OBST(freq, 0, n-1, dp, prefixSum ));
+        // we do not need to send val array as we just need to minimize
+        // the cost and this cost can be minimized without val[]
+        print2D(dp);
     }
 
 }
