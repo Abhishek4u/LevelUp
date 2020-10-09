@@ -86,7 +86,7 @@ public class l006_cutType {
         print2D(dp);
     }
 
-    //------------------------------------OCT7------------------------------------//
+    //------------------------------------OCT6------------------------------------//
 
     // https://practice.geeksforgeeks.org/problems/brackets-in-matrix-chain-multiplication/0
     
@@ -307,6 +307,8 @@ public class l006_cutType {
         return maxCoins(nums, 0, n-1, dp);        
     }
 
+    // -----------------------------------------OCT7--------------------------------
+
     // Optimal Binary Search Tree
     // https://www.geeksforgeeks.org/optimal-binary-search-tree-dp-24/
 
@@ -359,4 +361,217 @@ public class l006_cutType {
         print2D(dp);
     }
 
+    // Leetcode 1039. Minimum Score Triangulation of Polygon
+
+    // ScreenShot11600 ownwards
+    // A triangle will be separated from whole polygon and then created partitions
+    // will do the same in recursion
+    public int minScoreTriangulation(int arr[], int si, int ei, int[][] dp) {
+        if(si + 1 == ei) return dp[si][ei] = 0;
+        // 2 points cannot make a triangle
+        
+        if(dp[si][ei] != -1) return dp[si][ei];
+        
+        int minAns = (int) 1e8;
+        for(int cut = si+1; cut < ei; cut++) {
+            
+            int leftTree = minScoreTriangulation(arr,si,cut, dp);
+            int rightTree = minScoreTriangulation(arr,cut,ei, dp);
+            
+            // you partition yourselves
+            // i will calculate my value 
+            int myAns = arr[si] * arr[cut] * arr[ei];
+            myAns = leftTree + myAns + rightTree;
+            
+            minAns =  Math.min(minAns, myAns);
+        }        
+        return dp[si][ei] = minAns;
+    }
+    
+    public int minScoreTriangulation(int[] A) {
+        int n = A.length;
+        
+        int dp[][] = new int[n][n];
+        for(int d[] : dp) Arrays.fill(d,-1);
+        
+        return minScoreTriangulation(A,0, n-1, dp);        
+    }
+
+    // Leetcode 132 Palindrome Partitioning II
+    public int minCut_02_DP(String str, int SI, int EI, int[] dp, boolean[][] isPal) {
+        
+        // can use EI here also 
+        for(int si = EI - 1; si >= SI; si--) {
+            if(isPal[si][EI]) {
+                dp[si] = 0;
+                continue;
+            }
+            int minAns = (int) 1e9;
+            for(int cut = si; cut < EI; cut++) {
+                if(isPal[si][cut]) {
+                    minAns = Math.min(minAns, dp[cut+1] + 1);
+                }
+            }
+            dp[si] = minAns;
+        }
+        return dp[SI];
+    }
+    // in this recursion only si will change so we will use 1d dp
+    public int minCut_02(String str, int si, int ei, int[]dp, boolean[][] isPal) {
+        
+        if(isPal[si][ei] ) return dp[si] = 0;
+        if(dp[si] != -1) return dp[si];
+        
+        int minAns = (int) 1e8;
+        // you can use here <= ei also but this will also work
+        // bcz if you left with single char it is always palindrome  
+        // and if you use then it will send "" string 
+        for(int cut = si; cut < ei; cut++) {
+            
+            // we will call only when curr string is palindrome(1 length is also palindrome)
+            if(isPal[si][cut]) {
+                int myAns = minCut_02(str, cut + 1, ei, dp,isPal) + 1;
+                // +1 bcz i made a cut here
+                minAns = Math.min(minAns, myAns);
+            }
+        }
+        return dp[si] = minAns;
+    }
+        // O(n*n*n)
+    public int minCut_01(String str, int si, int ei, int[][] dp,boolean[][] isPal) {
+
+        if(isPal[si][ei]) return dp[si][ei] = 0; 
+        // if palidrome then no need to cut
+                
+        if(dp[si][ei] != -1) return dp[si][ei];
+        
+        int minVal = (int) 1e8;
+        for(int cut = ei-1; cut >= si; cut--) {
+            // run untill ei - 1 bcz for whole string we already checked in if condition
+
+            int leftTree = minCut_01(str,si, cut,dp,isPal);
+            int rightTree = minCut_01(str, cut+1,ei, dp,isPal);
+            // draw cases in copy to understand the calls (how these cuts are made)
+            
+            // add +1 means you made a cut at this idx
+            int myCost = leftTree + 1 + rightTree;
+            minVal = Math.min(minVal, myCost);
+        }
+        
+        return dp[si][ei] = minVal;
+    }
+    
+    public void isPal(String s,boolean[][] pal, int n) {
+        
+        for(int gap = 0; gap < n; gap++) {
+            for(int i = 0, j = gap; j < n; i++, j++) {
+                
+                if(gap == 0) pal[i][j] = true; // single char
+                else if(gap == 1) pal[i][j] = s.charAt(i) == s.charAt(j);
+                // 2 chars
+                else {
+                    pal[i][j] = ( s.charAt(i) == s.charAt(j) && pal[i+1][j-1] );
+                    // above 2 chars
+                }
+            }
+        }
+    }
+    public int minCut(String s) {
+        int n = s.length();
+        
+        boolean[][] isPalindrome = new boolean[n][n];
+        isPal(s, isPalindrome, n);
+        
+        //BruteForce
+        // int dp[][] = new int[n][n];
+        // for(int []d : dp) Arrays.fill(d,-1);
+        // return minCut_01(s, 0, n-1, dp, isPalindrome);
+       
+        // // Optimized
+        // int dp2[] = new int[n];
+        // Arrays.fill(dp2,-1);
+        // return minCut_02(s,0, n-1, dp2, isPalindrome);
+        
+        // Tabulation
+        int dp3[] = new int[n];
+        return minCut_02_DP(s,0,n-1,dp3,isPalindrome);
+    }
+
+    // Leetcode 45. Jump Game II
+
+    //Will give TLE
+    public int jump_rec(int[] arr, int idx, int[] dp) {
+        
+        if(idx == arr.length - 1) return dp[idx] = 0;
+        if(dp[idx] != -1) return dp[idx];
+        
+        int minAns = (int) 1e9;
+        for(int jump = idx+1; jump < arr.length && jump <= arr[idx] + idx; jump++) {
+            
+            minAns = Math.min(minAns, jump_rec(arr,jump , dp) + 1);
+        }        
+        return dp[idx] = minAns;
+    }
+    
+    // TLE
+    public int jump_DP(int[] nums) {
+        int n = nums.length;
+        if(n == 0 || n == 1) return 0;
+        
+        int dp[] = new int[n];
+        dp[n-1] = 0;
+        
+        for(int i = n-2; i >= 0;i--) {            
+            int loc = nums[i];
+            dp[i] = (int) 1e9;
+            
+            for(int j = i+1; j <= i+loc && j < n; j++) {
+                
+                dp[i] = Math.min(dp[i], dp[j] + 1);
+            }
+        }
+        return dp[0];
+    }
+    
+    public int jump(int[] nums) {
+        
+        int n = nums.length;
+        
+        int dp[] = new int[n];
+        // Arrays.fill(dp,-1);
+        // return jump_rec(nums, 0, dp);
+        
+        return jump_dp(nums, 0, dp);
+    }
+
+    // OPTIMIZED ONE (Accepted)
+    // Think like you have to take min no of buses to reach to end
+    // So you will take longest route bus and after it reached then again
+    // take longest route bus
+    public int jump(int[] nums) {
+        int n = nums.length;
+        
+        int maxEnding = 0; // current bus last stop
+        int maxPossibleJump = 0; // max longest route bus
+        
+        int jump = 0; // no of buses changed
+        
+        for(int i = 0; i < n - 1; i++) {
+            // -1 bcz if current bus reaches to end if condition will increment
+            // jump as maxEnding can be equal to i
+            
+            maxPossibleJump = Math.max( maxPossibleJump, nums[i] + i );
+            
+            if(maxEnding == i) {
+                // current bus route ended so take 
+                // another longest route bus
+                
+                maxEnding = maxPossibleJump;
+                jump++;
+            }
+        }
+        return jump;
+    }
+
+    
 }
