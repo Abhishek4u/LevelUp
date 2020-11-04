@@ -73,7 +73,7 @@ public class l001questionsHeap {
     public int[][] kClosest(int[][] points, int K) {
         
         PriorityQueue<int[]> pq = new PriorityQueue<> ((a,b) -> {
-            // distance formula
+            // distance formula -> (x2 - x1)^2 + (y2 - y1)^2
             int p1 = (a[1] - 0)*(a[1] - 0) + (a[0] - 0)*(a[0] - 0);
             int p2 = (b[1] - 0)*(b[1] - 0) + (b[0] - 0)*(b[0] - 0);
             
@@ -116,25 +116,109 @@ public class l001questionsHeap {
     // Leetcode 356 Line Reflection
     // Lintcode 908
 
+    // Screenshot 12302 ownwards
+
+    // 1. Sir's Code (Without division)
     public boolean isReflected(int[][] points) {
-        HashSet<Sintr> map new HashMap<> ();
-        int min = (int) 1e9;
-        int max = -(int) 1e9;
-
-        for(int [] p : points) {
-            max = Math.max(max, p[0]);
+        
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        
+        HashSet<String> map = new HashSet<> ();
+        
+        for(int []p : points) {
             min = Math.min(min, p[0]);
-
-            String str = p[0] + @ + p[1];
+            max = Math.max(max, p[0]);
+            
+            String str = p[0] + "@" + p[1];
             map.add(str);
+            
         }
-
-        int sum = max + min;
-        for(int[] p : points) {
-            String str = (sum - p[0]) + @ p[1];
-
+        
+        int sum = (min + max);
+        for(int []p : points) {
+            
+            String str = (sum - p[0]) + "@" + p[1];
+            
             if(!map.contains(str)) return false;
         }
         return true;
+    }
+    // 2. Modified Sir's Code
+    public boolean isReflected(int[][] points) {
+        
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        
+        HashSet<String> plane = new HashSet<> ();
+        
+        for(int pts[] : points) {
+            
+            min = Math.min(pts[0], min);
+            max = Math.max(pts[0], max);
+            
+            plane.add(pts[0] + "@" + pts[1]);
+        }
+        
+        for(int pts[] : points) {
+            
+            int reflectedX = pts[0] - min;
+            reflectedX = max - reflectedX;
+            
+            if(!plane.contains(reflectedX + "@" + pts[1])) return false;
+        }
+        
+        return true;
+    }
+
+    // 3. My Code (Using division operator)
+    public boolean isReflected(int[][] points) {
+        // Write your code here
+        HashSet<String> set = new HashSet<> ();
+        float mid = 0;
+        for(int pts[] : points) {
+            set.add(pts[0] + "@" + pts[1]);
+            
+            mid += pts[0];
+        }
+        mid /= points.length;
+
+        for(int pts[] : points) {
+            
+            float x = mid - pts[0];
+            x = x + mid;
+            float y = pts[0] - mid ;
+            y = mid - y;
+            
+            String str = (int)(x) + "@" + pts[1];
+            String str2 = (int)(y) + "@" + pts[1];
+
+            if(!set.contains(str) && !set.contains(str2)) return false;
+        }
+        return true;
+    }
+    
+    
+    public int trap(int[] height) {
+        if(height.length <= 2) return 0;
+        
+        int n = height.length;        
+        int lMax = 0, li = 0, rMax = 0, ri = n-1;
+        
+        int ans = 0;
+        while(li <= ri) {
+            lMax = Math.max(lMax, height[li]);
+            rMax = Math.max(rMax, height[ri]);
+            
+            if(lMax <= rMax ){
+                ans += lMax - height[li++];
+                // no need to check for negative value as we are always
+                // updating the lMax and rMax with current idx value
+            } else {
+                // else move right side
+                ans += rMax - height[ri--];
+            }
+        }
+        return ans;
     }
 }
