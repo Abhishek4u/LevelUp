@@ -415,7 +415,197 @@ public class l002questionsHashMap {
         // remaining conditions will give false output
     }
 
-    
+    // 407. Trapping Rain Water II
+    // 3d trap water ques
+
+    public int trapRainWater(int[][] arr) {        
+        if(arr.length == 0 || arr[0].length == 0) return 0;
+        
+        int n = arr.length, m = arr[0].length;
+        
+        PriorityQueue<Integer> pq = new PriorityQueue<> ( (a,b) -> {
+            return arr[a/m][a%m] - arr[b/m][b%m];
+        });
+        
+        boolean[][] vis = new boolean[n][m];
+        int water = 0;
+        int boun = 0; //  Max Boundary
+        
+        for(int i = 0;i < n; i++) {
+            for(int j = 0;j < m; j++) {
+                
+                if(i == 0 || i == n-1 || j == 0 || j == m-1) {
+                    pq.add(i*m + j);
+                    vis[i][j] = true;
+                }
+            }
+        }        
+        int dir[][] = { {1,0}, {-1,0}, {0,1}, {0,-1} };
+        while(pq.size() != 0) {
+            int idx = pq.poll();
+            
+            int r = idx/m;
+            int c = idx%m;
+            
+            water += Math.max(0, boun - arr[r][c]);
+            boun = Math.max(boun, arr[r][c]);
+            
+            for(int d[] : dir) {
+                int x = r + d[0];
+                int y = c + d[1];
+                
+                if(x >= 0 && y >= 0 && x < n && y < m && !vis[x][y]) {                    
+                    vis[x][y] = true;
+                    pq.add(x*m + y);
+                }
+            }
+        }        
+        return water;
+    }
+
+    // 781. Rabbits in Forest 
+    // 1st Code O(n) Simple
+     public int numRabbits(int[] answers) {
+        
+        HashMap<Integer, Integer> map = new HashMap<> ();     
+                
+        int ans = 0;       
+        for(int ele : answers) {
+            map.put(ele, map.getOrDefault(ele, 0) + 1);
+            // initialize a new color
+            
+            if(map.get(ele) == 1) ans += ele + 1;
+            // +1 bcz of own count            
+            if(map.get(ele) == ele+1) map.remove(ele);
+            // current color count is completed so remove it
+        }
+        return ans;
+    }
+    // 2nd Code O(2n) Sumeet Sir Video
+    public int numRabbits(int[] answers) {
+        
+        HashMap<Integer, Integer> map = new HashMap<> ();       
+        for(int ele : answers) {
+            map.put(ele, map.getOrDefault(ele, 0) + 1);
+        }
+        
+        int ans = 0;
+        for(int key : map.keySet()) {
+
+            int gs = key + 1; // group size
+            int reportees = map.get(key);
+            
+            int ng = (int) Math.ceil(reportees / (gs * 1.0));
+            // new group
+            ans += ng * gs;
+        }
+        return ans;
+    }
+
+    // 560. Subarray Sum Equals K
+    public int subarraySum(int[] nums, int k) {
+        if(nums.length == 0) return 0;
+        
+        HashMap<Integer, Integer> map = new HashMap<> ();
+        
+        map.put(0, 1) ;
+        // bcz if subarray from starting equals to k 
+        // means we have 1 possible subarray (sum - k) = 0 
+        
+        int sum = 0;
+        int count = 0;
+        
+        for(int ele : nums) {
+            sum += ele;
+            
+            if(map.containsKey(sum - k)) count += map.get(sum - k);
+            // + value bcz array can contains negative elts and same value
+            // could be there in different idx of prefix sum[] after addition
+            // and those also will be treated as subarrays      
+            
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+            // put curr sum in last bcz it can chage ans too 
+            // eg : [1] elt is there only and it will count itself
+        }
+        return count;
+    }
+
+    // Leetcode 974 Subarray Sums Divisible by K
+    public int subarraysDivByK(int[] A, int K) {
+        
+        HashMap<Integer, Integer> map = new HashMap<> ();
+        // prefix sum map
+        map.put(0, 1);
+        // if subarray from starting contributes so 
+        //  and if we have 0 remainder then 1 ans possible
+        
+        int sum = 0;
+        int count = 0;
+        
+        for(int ele : A) {
+            
+            sum += ele;
+            int val = (sum%K +K)%K;
+            
+            if(map.containsKey(val)) count += map.get(val);
+            // if map contains same remainder that means the elts
+            // in between are completely divisible by k so add to count
+            // ie. no of times the same value appeared 
+            
+            map.put(val, map.getOrDefault(val, 0) + 1);
+        }
+        return count;
+    }
+
+    // https://practice.geeksforgeeks.org/problems/longest-sub-array-with-sum-k/0
+    public static void main (String[] args) {
+        Scanner scn = new Scanner(System.in);
+	    int t = scn.nextInt();
+	    while(t-->0){
+	        int n = scn.nextInt();
+	        int k = scn.nextInt();
+	        
+	        HashMap<Integer,Integer> map = new HashMap<> ();
+	        map.put(0, -1);
+	        // bcz for index for subarray from starting 
+	        
+	        int maxLen = 0;
+	        int sum = 0;
+	        
+	        for(int i = 0;i < n; i++) {
+	            sum += scn.nextInt();
+	            int val = (sum - k);
+	            
+	            if(map.containsKey(val)) maxLen = Math.max(maxLen, i - map.get(val));
+	            
+	            if(!map.containsKey(sum)) map.put(sum, i);
+	            // we want maxLen so we will push only 1st idx of every subarray sum
+	        }
+	        System.out.println(maxLen);
+	    }
+	}
+
+    // https://practice.geeksforgeeks.org/problems/longest-subarray-with-sum-divisible-by-k1259/1
+    int longSubarrWthSumDivByK(int a[], int n, int k) {
+        HashMap<Integer,Integer> map = new HashMap<> ();
+        map.put(0, -1);
+        // bcz for index for subarray from starting 
+
+        int maxLen = 0;
+        int sum = 0;
+        
+        for(int i = 0;i < n; i++) {
+            sum += a[i];
+            int val = (sum%k + k)%k;
+            
+            if(map.containsKey(val)) maxLen = Math.max(maxLen, i - map.get(val));
+            
+            if(!map.containsKey(val)) map.put(val, i);
+            // we want maxLen so we will push only 1st idx of every subarrayleftout remainder
+        }
+        return maxLen;
+    }
+
     
 
 }
