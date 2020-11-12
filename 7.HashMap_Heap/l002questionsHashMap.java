@@ -557,6 +557,53 @@ public class l002questionsHashMap {
         return count;
     }
 
+    // 974 (If you want to print the subarrays too then use this code)
+    public int subarraysDivByK(int[] A, int K) {
+        
+        HashMap<Integer, Integer> map = new HashMap<> ();
+        HashMap<Integer, ArrayList<Integer> > sub = new HashMap<> ();
+        HashSet<ArrayList<Integer> > set = new HashSet<> ();
+        
+        // prefix sum map
+        map.put(0, 1);
+        sub.put(0, new ArrayList<> ());
+        sub.get(0).add(0);
+        // if subarray from starting contributes so 
+        //  and if we have 0 remainder then 1 ans possible
+        
+        int sum = 0;
+        int count = 0;
+        int i = -1;
+        for(int ele : A) {
+            i++;
+            sum += ele;
+            int val = (sum%K +K)%K;
+            
+            if(map.containsKey(val)) {
+                count += map.get(val);
+                
+                ArrayList<Integer> idxes = sub.get(val);
+                for(int idx : idxes) {
+                    ArrayList<Integer> vals = new ArrayList<> ();
+
+                    for(; idx <= i; idx++) {
+                        vals.add(A[idx]); 
+                    }
+                    set.add(vals);
+                }
+            }
+            // if map contains same remainder that means the elts
+            // in between are completely divisible by k so add to count
+            // ie. no of times the same value appeared 
+            
+            map.put(val, map.getOrDefault(val, 0) + 1);
+            sub.putIfAbsent(val, new ArrayList<> ());
+            sub.get(val).add(i+1);
+        }
+        for(ArrayList<Integer> vals : set) System.out.println(vals);
+        return count;
+    }
+
     // https://practice.geeksforgeeks.org/problems/longest-sub-array-with-sum-k/0
     public static void main (String[] args) {
         Scanner scn = new Scanner(System.in);
@@ -606,6 +653,146 @@ public class l002questionsHashMap {
         return maxLen;
     }
 
-    
+    // 525. Contiguous Array (Longest subarray with Equal no of 0 and 1)
+    public int findMaxLength(int[] nums) {
+        
+        int n = nums.length;
+        HashMap<Integer, Integer> map = new HashMap<> ();
+        map.put(0, -1);
+        // for if subarray starting from 0 makes an answer
+        
+        int sum = 0;
+        int maxLen = 0;
+        for(int i = 0;i < n; i++) {
+            sum += nums[i] == 0 ? -1 : 1;
+            // if 0 is present we will add -1 for that elt
+            
+            if(map.containsKey(sum)) maxLen = Math.max(maxLen, i - map.get(sum));
+                                     
+            if(!map.containsKey(sum)) map.put(sum, i);
+            // add only once(means dont update) bcz we want maxLength
+        }
+        return maxLen;
+    }
 
+    // https://practice.geeksforgeeks.org/problems/count-subarrays-with-equal-number-of-1s-and-0s/0#
+    // Count Subarrays with equal 1s and 0s 
+    public int countSubArrays(int[] nums) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        map.put(0,1);
+        int count = 0;
+        int sum = 0;
+             
+        for(int i = 0; i<nums.length; i++){
+            sum  += nums[i] == 1 ? 1 : -1;
+            int val = sum - 0;
+            if(map.containsKey(val)) count += map.get(val);   
+            map.put(sum,map.getOrDefault(sum,0) + 1);
+        }         
+        return count;
+    }
+
+    // 930. Binary Subarrays With Sum
+    public int numSubarraysWithSum(int[] A, int S) {
+        
+        HashMap<Integer, Integer> map = new HashMap <> ();
+        map.put(0,1);
+        // if prefix sum - S == 0 means we have valid 1 subarray
+        
+        int sum = 0; // prefix sum
+        int count = 0;
+        
+        for(int ele : A) {
+            sum += ele;
+            
+            if(map.containsKey(sum - S)) count += map.get(sum - S);
+            // if contains that val then add to count no of times 
+            // that value is present in map
+            
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return count;
+    }
+
+    // Number of subarrays having sum less than K
+    // https://www.geeksforgeeks.org/number-subarrays-sum-less-k/
+    // --------------------------------SLIDING WINDOW TEHCNIQUE----------------------------
+    public int numOfSubArraySumLessThanK(int[] arr, int k) {
+
+        int si = 0, ei = 0;
+        int n = arr.length;
+
+        int count = 0;
+        int sum = 0;
+
+        // while ei point does not crosses last elt
+        while(ei < n) {
+            
+            sum += arr[ei++];
+            while(sum > k && si < ei) {
+                // si < ei bcz si can move ahead of ei if val is >= k
+                sum -= arr[si++];
+            }
+            count += (ei - si);
+        }
+        return count;
+    }
+
+    // Leetcode 930 Using Sliding Window
+
+    // Using sliding window less than k method
+    // for eg. (k < 10) - (k < 9) will give (k = 10)
+    public int numSubarraysWithSum(int[] A, int S) {
+        return numOfSubArraySumLessThanK(A, S) - numOfSubArraySumLessThanK(A, (S-1));
+    }
+
+    // Leetcode 3. Longest Substring Without Repeating Characters
+    // Using 256bits Constant[] space
+    // Using array (Fast 2ms)
+    public int lengthOfLongestSubstring(String s) {
+        if(s.length() == 0) return 0;
+        
+        int n = s.length();
+        int maxLen = 1; // single char
+        boolean ch[] = new boolean[256];
+        
+        int i = 0, j = 0;
+        
+        while(j < n) {
+            // if same char is present then decrease sliding window size
+            // until 0 occurence of char at [j] remains
+            while(ch[s.charAt(j)] == true && i <= j) {
+                ch[s.charAt(i++)] = false;
+            }
+            // now we will have only 1 occurence of char
+            ch[s.charAt(j++)] = true;
+            maxLen = Math.max(maxLen, j - i);            
+        }
+        return maxLen;
+    }
+
+    // Using HashSet (Slower 6ms)
+    public int lengthOfLongestSubstring2(String s) {
+        if(s.length() == 0) return 0;
+        
+        int n = s.length();
+        int maxLen = 1;
+        
+        HashSet<Character> set = new HashSet<> ();
+        
+        int si = 0, ei = 0;
+        
+        while(ei < n) { 
+            
+            while(set.contains(s.charAt(ei)) && si <= ei) {
+                set.remove(s.charAt(si++));
+            }            
+            set.add(s.charAt(ei++));
+            maxLen = Math.max(maxLen, ei - si);
+        }
+        return maxLen;
+    }
+
+
+    
 }
