@@ -793,6 +793,238 @@ public class l002questionsHashMap {
         return maxLen;
     }
 
+    // -------------------------------------19thOct------------------------------------------
+    // 76. Minimum Window Substring
+    // https://www.youtube.com/watch?v=eS6PZLjoaq8
+    public String minWindow(String s, String t) {
+        
+        int ns = s.length(); // length of s string
+        int nt = t.length(); // length of t String
+        int freq[] = new int[128];
+        for(int i = 0;i < nt; i++) freq[t.charAt(i)]++;
+        
+        int count = nt;
+        int si = 0, ei = 0, len = (int) 1e8;
+        int head = 0;
+        
+        while(ei < ns) {            
+            if(freq[s.charAt(ei++)]-- > 0 ) count--;
+            // first it checks then increments the value(postIncrement)
+
+            // we will remove elts while we do not get invalid window
+            // ie. one elt is not present in list
+            while( count == 0 && si < ei) {
+                // will remove until we have all chars present
+                
+                if(ei - si < len) len = ei - (head = si); 
+                // update to minimum length
+                
+                if(freq[s.charAt(si++)]++ == 0) count++;  
+                // this condition will be true when we have all chars present
+                // and we will remove 1 char to move to next window
+            }
+        }
+        return len == (int) 1e8 ? "" : s.substring(head, head + len);
+    }
+
+    //  GFG Smallest distinct window 
+    // https://practice.geeksforgeeks.org/problems/smallest-distant-window/0
+
+    // Same as above ques
+    public static int smallestDistinctWindow(String s) {
+	    int freq[] = new int[128];
+	    int count = 0;
+	    
+	    for(int i = 0;i < s.length(); i++) {
+	        if(freq[s.charAt(i)] == 0) {
+	            freq[s.charAt(i)]++;
+	            count++;
+	        }
+	    }
+
+	    int n = s.length();
+	    int si = 0, ei = 0;
+	    int len = (int) 1e8;
+	    
+	    while(ei < n) {
+	        if(freq[s.charAt(ei++)]-- > 0) count--;
+	        
+	        while(count == 0 && si < ei) {
+	            len = Math.min(len, ei - si);
+	            
+	            if(freq[s.charAt(si++)]++ == 0) count++;
+	        }
+	    }
+	    return len;
+	}
+
+    // Leetcode 340 Longest Substring with AtMost K Distinct Chars
+    // Lintcode 386. Longest Substring with At Most K Distinct Characters
+    // myCode (Same as Sir's Code)
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        // write your code here
+        int n = s.length();
+        int freq[] = new int[128];
+        
+        int si = 0, ei = 0;
+        int count = 0, maxLen = 0;
+        
+        while(ei < n) {
+            if(freq[s.charAt(ei++)]++ == 0) count++;
+            // it will check first then increment frequency
+            
+            while(count > k && si < ei) {
+                if( --freq[s.charAt(si++)] == 0) count--;
+                // it will decrement first then check 
+            }
+            maxLen = Math.max(maxLen, ei - si);
+        }
+        return maxLen;
+    }
+
+    // Leetcode 159 Longest Substring with atmost two distinct characters
+    // Lintcode 928. Longest Substring with At Most Two Distinct Characters
+    // Same as above (Here k = 2)
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        // Write your code here
+        
+        int n = s.length();
+        int freq[] = new int[128];
+        
+        int si = 0, ei = 0;
+        int count = 0, maxLen = 0;
+        
+        while(ei < n) {
+            if(freq[s.charAt(ei++)]++ == 0) count++;
+            // it will check first then increment frequency
+            
+            while(count > 2 && si < ei) {
+                if( --freq[s.charAt(si++)] == 0) count--;
+                // it will decrement first then check 
+            }
+            maxLen = Math.max(maxLen, ei - si);
+        }
+        return maxLen;
+    } 
+
+    // 239. Sliding Window Maximum
+
+    // 1. Using PriorityQueue(Intuitive One) O(nlogn) worst and avg is O(nlogk)
+    public int[] maxSlidingWindow2(int[] nums, int k) {        
+        int n = nums.length;
+        
+        PriorityQueue<int[]> pq = new PriorityQueue<> ((a, b) -> {
+            // arr[i], idx
+            return b[0] - a[0];
+        });
+        
+        int ans[] = new int[n - k + 1];
+        int idx = 0;
+        
+        for(int i = 0; i < n; i++) {
+            while(pq.size() != 0 && pq.peek()[1] <= i - k) pq.poll();
+            // it will remove all larger elts that are not in current window
+            // it will not remove smaller elts but we need only larger elts
+            // so those elts will never be added in answer
+            
+            pq.add(new int[] {nums[i], i});
+            // add elt and index in array
+            
+            if(i >= k - 1) ans[idx++] = pq.peek()[0];     
+            // fill the answer array after moving k elts ahead(window size)
+        }  
+        return ans;
+    }
+    
+    // 2. Optimization using Deque O(n)
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        
+        int n = nums.length;
+        
+        ArrayDeque<Integer> que = new ArrayDeque<> ();
+        // que of index
+        
+        int ans[] = new int[n - k + 1];
+        int idx = 0;
+        
+        for(int i = 0; i < n; i++) {
+            
+            while(que.size() != 0 && que.getFirst() <= i - k) que.removeFirst();
+            // remove elts which are out of range of current window size
+            
+            while(que.size() != 0 && nums[que.getLast()] <= nums[i]) que.removeLast();
+            // removeLast elts and if elts are smaller than current elt then remove
+            // as we want to store only largest elts in que for current window
+            // REMOVEFRONT WILL NOT REMOVE ALL SMALLER ELTS SO USE REMOVELAST HERE
+            // eg . [1,3,1,2,0,5] , k = 3
+            que.addLast(i);
+            
+            if( i >= k - 1) ans[idx++] = nums[que.getFirst()];
+        }
+        return ans;
+    }
+
+    // https://www.geeksforgeeks.org/length-largest-subarray-contiguous-elements-set-1/
+    // without repetition of number
+    public static void largestSubArray(int[] arr) {
+        int len = 0;
+        int n = arr.length;
+
+        int min = 0, max = 0;
+        int len = 0;
+
+        for(int i = 0;i < n; i++) {
+            min = max = arr[i];
+
+            for(int j = i+1; j < n; j++) {
+                min = Math.min(min, arr[j]);
+                max = Math.max(max, arr[j]);
+
+                if(max - min == j - i) {
+                    len = Math.max(len, j - i);
+                    // if elts are contigous then their difference will 
+                    // be equal to difference of idx of subarray
+                }
+                
+            }
+        }
+        return len;
+    }
+
+    // with repitition of number
+    // same as above one but if no is repeated in any subarray then
+    // we will discard that subarray
+    public static void largestSubArray(int[] arr) {
+        int len = 0;
+        int n = arr.length;
+
+        int min = 0,max = 0;
+        int len = 0;
+
+        HashSet<Integer> set = new HashSet<> ();
+
+        for(int i = 0;i < n; i++) {
+            min = max = arr[i];
+            set.add(arr[i]);
+
+            for(int j = i+1; j < n; j++) {
+                if(set.contains(arr[j])) {
+                    // no is repeated so we will discard this subarray
+                    break;
+                }
+                min = Math.min(min, arr[j]);
+                max = Math.max(max, arr[j]);
+
+                if(max - min == j - i) {
+                    len = Math.max(len, j - i);
+                }
+            }
+            set.clear();
+            // clear the set for reuse in next subarray
+        }
+        return len;
+    }
 
     
+
 }
