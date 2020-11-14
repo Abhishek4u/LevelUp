@@ -1028,7 +1028,7 @@ public class l002questionsHashMap {
     }
 
     // 954. Array of Doubled Pairs
-    // MYCODE
+    // MYCODE O(nlogn)
 
     // You can see the relation using given eqn that
     //  A[2*i+1] = 2 * A[2*i]
@@ -1043,7 +1043,7 @@ public class l002questionsHashMap {
         // -4 value present for a[0] value
         // we will keep removing the values after processing 
         // and if 2*a[i] not present it means array cannot be arranged
-    )
+    
     public boolean canReorderDoubled(int[] A) {
         int n = A.length;
         if( n%2 != 0) return false;
@@ -1076,7 +1076,7 @@ public class l002questionsHashMap {
         return true;
     }
 
-    // SIR'S CODE
+    // SIR'S CODE O(nlogn)
     public boolean canReorderDoubled(int[] A) {
         int n = A.length;
         if( n%2 != 0) return false;
@@ -1108,5 +1108,67 @@ public class l002questionsHashMap {
         }        
         return true;
     }
+
+    // GFG Count Substrings with equal number of 0s, 1s and 2s
+    // https://www.geeksforgeeks.org/substring-equal-number-0-1-2/
+
+    // for substring if we get same number of 0 1 2 at some idx in string after some steps
+    // it means the numbers in between did not affected the same no of 0 1 2(which means 
+    // count of 0 1 2 is equal in between the numbers so we will increment it with
+    // value present in hashmap bcz multiple substrings can be made 
+    // eg : 102100211 have substring  102, 021, 210, 210021 and 021)
+    // where 021 is extended to 210021 means we used the count present in map
+    public static int equal012(String s) {
+	    
+	    HashMap<String, Integer> map = new HashMap<> ();
+	    map.put("0@0", 1);
+        // if we have equal no of 0,1,2 eg : 001122 
+        // In starting all counts are zero 
+	    int ans = 0;
+	    
+	    int nums[] = new int[3]; // 0, 1, 2 storage
+	    for(int i = 0; i < s.length(); i++) {
+	        
+	        int val = s.charAt(i) - '0';
+	        nums[val]++;
+	        
+	        String check = (nums[1] - nums[0]) + "@" + (nums[2] - nums[1]);
+            // you can use this math eqn for taking difference in values
+
+	        if(map.containsKey(check)) ans += map.get(check);
+	        
+	        map.put(check, map.getOrDefault(check, 0) + 1);
+	        
+	    }
+	    return ans;
+	}
+
+    // GFG Count pairs in array whose sum is divisible by K
+    // https://www.geeksforgeeks.org/count-pairs-in-array-whose-sum-is-divisible-by-k/
+    // -------------------------------DO-AGAIN-------------------------------
+    public static int pairSumDivisibleByK(int arr[], int k) {
+	    
+	    int freq[] = new int[k];
+	    
+	    for(int ele : arr) {
+	        freq[ele%k]++;
+	    }
+	    
+	    int ans = 0;
+	    for(int i = 1;i <= k/2 && i != k - i; i++)  {
+	        // i != k - i for even k bcz that will have (freq/2) * (freq/2) pairs
+	        
+	        // will add all pairs <k/2 for even and
+	        // for odd <= k/2 bcz if(k = 5 then k/2 = 2 
+	        // and k/2 - i = 3 for middle elts) 
+	        ans += freq[i] * freq[k - i];
+	    }
+	    if(k%2 == 0) ans += (freq[k/2] * (freq[k/2] - 1))/2;
+	    // for even k and remainder is t then t/2 pairs are
+	   // there that can that can be generated
+	    
+	    ans += (freq[0] * (freq[0] - 1))/2; // add pairs which are fully divisible by k
+	    return ans;
+	}
 
 }

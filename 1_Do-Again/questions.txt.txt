@@ -1,2 +1,6 @@
     // https://www.geeksforgeeks.org/check-if-frequency-of-all-characters-can-become-same-by-one-removal/
 	11Oct Class (SS12373)
+
+    GFG Count pairs in array whose sum is divisible by K
+    // https://www.geeksforgeeks.org/count-pairs-in-array-whose-sum-is-divisible-by-k/
+   	19thOct Class (SS12691)
