@@ -982,8 +982,8 @@ public class l002questionsHashMap {
 
                 if(max - min == j - i) {
                     len = Math.max(len, j - i);
-                    // if elts are contigous then their difference will 
-                    // be equal to difference of idx of subarray
+                    // if elts are contigous then their min and max elt difference will 
+                    // be equal to difference b/w idx of subarray
                 }
                 
             }
@@ -991,6 +991,7 @@ public class l002questionsHashMap {
         return len;
     }
 
+    // https://www.geeksforgeeks.org/length-largest-subarray-contiguous-elements-set-2/
     // with repitition of number
     // same as above one but if no is repeated in any subarray then
     // we will discard that subarray
@@ -1009,9 +1010,10 @@ public class l002questionsHashMap {
 
             for(int j = i+1; j < n; j++) {
                 if(set.contains(arr[j])) {
-                    // no is repeated so we will discard this subarray
+                    // number is repeated again so we will discard this subarray
                     break;
                 }
+                set.add(arr[j]);
                 min = Math.min(min, arr[j]);
                 max = Math.max(max, arr[j]);
 
@@ -1025,6 +1027,86 @@ public class l002questionsHashMap {
         return len;
     }
 
-    
+    // 954. Array of Doubled Pairs
+    // MYCODE
+
+    // You can see the relation using given eqn that
+    //  A[2*i+1] = 2 * A[2*i]
+    //  ie : A[1] = 2*A[0]
+        //  A[3] = 2*A[2]
+        //  A[5] = 2*A[4]
+    // it means we need number's double value for half of chars
+    // first we will sort arrays but(using absolute value bcz 
+        // for eg : [4,-2,2,-4] will give [-4,-2,2,4] and we do not have
+        // -8 value in array for a[0] value
+        // if we sort using abs value the [-2,2,-4,4] and we have
+        // -4 value present for a[0] value
+        // we will keep removing the values after processing 
+        // and if 2*a[i] not present it means array cannot be arranged
+    )
+    public boolean canReorderDoubled(int[] A) {
+        int n = A.length;
+        if( n%2 != 0) return false;
+        
+        Integer[] arr = new Integer[n];
+        for(int i = 0; i < n; i++) arr[i] = A[i];
+        
+        Arrays.sort(arr, (a, b) -> {
+            return Math.abs(a) - Math.abs(b);
+        });
+        
+        HashMap<Integer,Integer> map = new HashMap<> ();
+        for(int ele : arr) map.put(ele, map.getOrDefault(ele, 0) + 1);
+        
+        for(int i = 0; i < n; i++) {
+            
+            if(map.containsKey(arr[i])) {
+                if(map.containsKey(arr[i]*2)) {                
+                    map.put(arr[i]*2, map.get(arr[i]*2) - 1);
+                    map.put(arr[i], map.get(arr[i]) - 1);
+
+                    if(map.get(arr[i]*2)== 0) map.remove(arr[i]*2);
+                    if(map.containsKey(arr[i]) && map.get(arr[i]) == 0) map.remove(arr[i]);  
+                    // for 2nd time check for value present or not bcz 
+                    // eg : [0,0]  will remove 0 value in line above it bcz we decremented its value twice in above lines
+                    // and if we want to remove same value again it will give null pointer error
+                } else return false;
+            }
+        }        
+        return true;
+    }
+
+    // SIR'S CODE
+    public boolean canReorderDoubled(int[] A) {
+        int n = A.length;
+        if( n%2 != 0) return false;
+        
+        Integer[] arr = new Integer[n];
+        for(int i = 0; i < n; i++) arr[i] = A[i];
+        
+        Arrays.sort(arr, (a, b) -> {
+            return Math.abs(a) - Math.abs(b);
+            // for using lambda in sort we need object array
+            // so use Integer[]
+        });
+        // sort the array using abs value(see in repo)
+        // so that we can find double value of ele
+        
+        HashMap<Integer,Integer> map = new HashMap<> ();
+        for(int ele : arr) map.put(ele, map.getOrDefault(ele, 0) + 1);
+        
+        for(int ele : arr) {
+            if(map.get(ele) == 0) continue;
+            // elt is not present or processed so do not process it
+            
+            if(map.getOrDefault(2*ele, 0) <= 0) return false;
+            // elt*2 not present or already processed means we do
+            // not have current elt's double value so we cannot rearrange it so return false
+            
+            map.put(ele, map.getOrDefault(ele, 0) - 1);
+            map.put(2*ele, map.getOrDefault(2*ele, 0) - 1);
+        }        
+        return true;
+    }
 
 }
