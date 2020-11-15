@@ -1,0 +1,2 @@
+[X , Q , Y , V , A ]
+[32, lpa, true, *Welcome To Amazon, Abhishek*, [I@1ee807c6, X , Q , Y , V , A ]
