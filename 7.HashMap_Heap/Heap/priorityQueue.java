@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 public class priorityQueue {
+    // Class Done on 9thOct
 
     // ----------------------------HEAP IS KNOWN AS PRIORITYQUEUE----------------------
     // 1. FOR VALUE REMOVAL : we have to swap the last value with first value(parent ) and then remove
@@ -34,7 +35,7 @@ public class priorityQueue {
 
         for(int i = pq.size() - 1; i >= 0 ;i--) {
             downHeapify(i);
-            // call downheapify to heapify all the elts starting from leafs
+            // call downheapify to heapify all the elts starting from leafs to parent
         }
     }
 
