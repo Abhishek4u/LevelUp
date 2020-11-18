@@ -195,6 +195,7 @@ public class questions {
 
     }
 
+    // 21Aug
     // ----------------------------------------BST--------------------------
 
     // Leetcode 235 Lowest Common Ancestor of a Binary Search Tree
@@ -475,5 +476,100 @@ public class questions {
         return st.pop().val; // return kth element
     }
 
+    // 450. Delete Node in a BST
+    // https://leetcode.com/problems/delete-node-in-a-bst/
+    public TreeNode deleteNode(TreeNode root, int key) {
+        
+        if(root == null) return null;
+        
+        if(root.val > key) root.left = deleteNode(root.left, key);
+        else if(root.val < key) root.right = deleteNode(root.right, key);
+        
+        else if(root.val == key) {
+            if(root.left == null || root.right == null) return root.left == null ? root.right : root.left;
+            
+            else {
+                int data = findLeft(root.right);
+                root.val = data;
+                
+                root.right = deleteNode(root.right, root.val);
+            }
+        }
+        return root;
+    }
 
+    public int findLeft(TreeNode node) {        
+        while(node.left != null) node = node.left;
+        
+        return node.val;
+    }
+
+    // =======================================================================
+        // LEETCODE 105, 106 IN TreeConstruction FILE
+    // =======================================================================
+
+    
+    // 979. Distribute Coins in Binary Tree
+    // https://leetcode.com/problems/distribute-coins-in-binary-tree/
+    // SS5650
+
+    int totalCoinsMovements = 0;
+    public int distributeCoins_(TreeNode node) {
+        
+        if(node == null) return 0;
+        
+        int leftDefeGain = distributeCoins_(node.left);
+        int rightDefeGain = distributeCoins_(node.right);
+        
+        totalCoinsMovements += Math.abs(leftDefeGain) + Math.abs(rightDefeGain);
+        // we will count excess coins count and also need as +ve value
+        
+        // Think like those child who need the coins are sending the boxes 
+        // and we will fill those boxes at current point thats why we are counting abs value
+        
+        return (node.val - 1) + leftDefeGain + rightDefeGain;
+        // return leftOut coins after fulfilling all needs
+    }
+    public int distributeCoins(TreeNode root) {
+        
+        if(distributeCoins_(root) != 0) return -1;
+        // all nodes coins needs cannot be fulfilled or excess coins are present
+        
+        return totalCoinsMovements;
+    }
+
+    // 968. Binary Tree Cameras
+    // https://leetcode.com/problems/binary-tree-cameras/
+
+    // 0 -> child has covered themselves,think about yourself
+    // 1 -> i installed camera and will cover parent and child too
+    // -1 -> i need camera
+    int cams = 0;
+    public int coverCams(TreeNode node) {
+        
+        if(node == null) return 0;
+        if(node.left == null && node.right == null) return -1;
+        
+        int left = coverCams(node.left);
+        int right = coverCams(node.right);
+        
+        if(left == -1 || right == -1) {
+            cams++;
+            return 1;
+            // i am installing cam 
+        } else if(left == 1 || right == 1) {
+            return 0;
+            // child has covered me
+        } else return -1;
+          // i need cam
+    }
+    
+    public int minCameraCover(TreeNode root) {
+        if(root == null) return 0;
+        
+        if(coverCams(root) == -1) cams += 1;
+        // root node needs camera
+        
+        return cams;
+    }
 }
