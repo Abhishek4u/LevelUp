@@ -572,4 +572,43 @@ public class questions {
         
         return cams;
     }
+
+    // 116. Populating Next Right Pointers in Each Node
+    // https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
+
+    // Use queue so that you can get next elt easily as it moves level wise (bfs) 
+    // where we have access for next node(in right side) 
+    // we will put null too at every end of level bcz we have to connect rightmost nodes next to null
+    // so we will use them to connect
+    public Node connect(Node root) {
+        if(root == null) return null;
+        
+        LinkedList<Node> que = new LinkedList<> ();
+        
+        que.add(root);
+        que.add(null);
+        
+        while(que.size() != 1) {    
+            // != 1 bcz we have added null and at last null will be there
+            
+            while(que.peek() != null) {
+                // if null  means we have reached to end of level 
+                
+                Node node = que.removeFirst();                
+                node.next = que.getFirst();
+                
+                if(node.left != null) que.addLast(node.left);
+                if(node.right != null) que.addLast(node.right);
+            }
+            que.removeFirst(); 
+            // remove null of current level
+            
+            que.addLast(null);
+            // add null for next level
+        }
+        return root;
+    }
+
+    
+
 }

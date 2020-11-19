@@ -548,4 +548,30 @@ public class l001 {
         allSolutions(node.right, level+1, data, pair);
     }
 
+    // To connect leaf node use previous pointer and update that pointer when
+    // you are on another leaf(Before updating connect left and right of both leaves)
+    static Node leafHead = null, leafPrev = null;
+    public static void connectLeafs(Node node) {
+
+        if(node.left == null && node.right == null) {
+
+            if(leafHead == null) {
+                leafHead = node;
+                leafPrev = node;
+
+            } else {
+
+                leafPrev.right = node;
+                node.left = leafPrev;
+
+                leafPrev = node;
+            }
+        }
+
+        connectLeafs(node.left);
+        connectLeafs(node.right);
+    }
+
+    
+
 }
