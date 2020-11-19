@@ -574,7 +574,25 @@ public class questions {
     }
 
     // 116. Populating Next Right Pointers in Each Node
+    // You are given a perfect binary tree where all leaves are on the same level, and every parent has two children
     // https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
+
+    // Using recursion
+    public Node connect(Node root) {
+        
+        if(root == null || root.left == null || root.right == null) return root;
+        // if input is null then root == null will check
+        // if node is leaf node then next condition will be checked
+            
+        if(root.left != null) root.left.next = root.right;
+        if(root.next != null) root.right.next = root.next.left;
+
+        connect(root.left);
+        connect(root.right);
+    
+        return root;
+    }
+
 
     // Use queue so that you can get next elt easily as it moves level wise (bfs) 
     // where we have access for next node(in right side) 
@@ -609,6 +627,83 @@ public class questions {
         return root;
     }
 
+    // 117. Populating Next Right Pointers in Each Node II
+    // ------------NOT A PERFECT BINARY TREE-------------------
+    public Node connect(Node root) {
+        if(root == null) return null;
+        
+        LinkedList<Node> que = new LinkedList<> ();
+        
+        que.add(root);
+        que.add(null);
+        
+        while(que.size() != 1) {    
+            // != 1 bcz we have added null and at last null will be there
+            
+            while(que.peek() != null) {
+                // if null  means we have reached to end of level 
+                
+                Node node = que.removeFirst();                
+                node.next = que.getFirst();
+                
+                if(node.left != null) que.addLast(node.left);
+                if(node.right != null) que.addLast(node.right);
+            }
+            que.removeFirst(); 
+            // remove null of current level
+            
+            que.addLast(null);
+            // add null for next level
+        }
+        return root;
+    } 
+
+    // Recursive approach
+    public void connect(TreeLinkNode root) {
+        if (root == null) return;
+        
+        // link root's child nodes
+        link(root);
+        
+        // before we recurse to the next level
+        // make sure all the child nodes of the nodes at current level are linked
+        TreeLinkNode curr = root.next;
+        while (curr != null) {
+            link(curr);
+            curr = curr.next;
+        }
+        
+        connect(root.left);
+        connect(root.right);
+    }
     
+    // helper function
+    // link root node's left and right nodes
+    void link(TreeLinkNode root) {
+        if (root == null) return;
+        
+        if (root.left != null) {
+            root.left.next = root.right != null ? root.right : getNext(root);
+        } 
+        
+        if (root.right != null) {
+            root.right.next = getNext(root);
+        }
+    }
+    
+    // get the left most node at the next level
+    TreeLinkNode getNext(TreeLinkNode node) {
+        TreeLinkNode next = node.next;
+        
+        while (next != null) {
+            if (next.left != null) return next.left;
+            if (next.right != null) return next.right;
+            next = next.next;
+        }
+        
+        return null;
+    }
+
+
 
 }
