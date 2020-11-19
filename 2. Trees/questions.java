@@ -593,6 +593,20 @@ public class questions {
         return root;
     }
 
+    // Sir's Code
+    public Node connect(Node root) {
+        
+        if(root == null ) return null;
+            
+        if(root.left != null) root.left.next = root.right;
+        if(root.right != null && root.next != null) root.right.next = root.next.left; 
+
+        connect(root.left);
+        connect(root.right);
+    
+        return root;
+    }
+
 
     // Use queue so that you can get next elt easily as it moves level wise (bfs) 
     // where we have access for next node(in right side) 
