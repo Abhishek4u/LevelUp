@@ -4,3 +4,8 @@
     GFG Count pairs in array whose sum is divisible by K
     // https://www.geeksforgeeks.org/count-pairs-in-array-whose-sum-is-divisible-by-k/
    	19thOct Class (SS12691)
+
+    Leetcode 774
+    Lintcode 848. Minimize Max Distance to Gas Station
+    // https://www.lintcode.com/problem/minimize-max-distance-to-gas-station/description
+	24thOct Class (SS13106)
