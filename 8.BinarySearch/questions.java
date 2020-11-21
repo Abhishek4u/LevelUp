@@ -562,7 +562,8 @@ public class questions {
 
     // 786. K-th Smallest Prime Fraction
     // https://leetcode.com/problems/k-th-smallest-prime-fraction/
-
+    // SS13194
+    
     // think like 2d(rows and cols will be A[] elts on both sides) array and fill that array with the fractions value
     // now you will find that every col's first cell contains smallest value than other cells(in same col)
     // so we will put these in priorityQueue and when we will remove from priorityQueue we will put
@@ -600,6 +601,68 @@ public class questions {
         ans[1] = A[ans[1]];
         
         return ans;
+    }
+
+    // 4. Median of Two Sorted Arrays
+    // https://leetcode.com/problems/median-of-two-sorted-arrays/
+    // 26Oct (Explanation) Code on 27Oct
+    // SS13214
+    // O(n + m) time and O(1) space
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int n = nums1.length, m = nums2.length;
+        
+        if(n > m) {
+            return findMedianSortedArrays(nums2, nums1);
+            // we want min size array on left side and if not
+            // then send in recursion smaller array in left side
+        }
+        
+        int oMid = (n + m + 1) >> 1; // overall mid (ie. the no of elts we need to have)        
+        int si = 0, ei = n; // for smaller[] ie. nums1[]
+        // here larger[] is nums2[] (ie. n < m)
+        
+        while(si <= ei) {
+            
+            int sMid = (si + ei) >> 1; // smaller[] mid
+            int lMid = oMid - sMid; // larger array mid
+            // ie : oMid = sMid + lMid
+            // => lMid = oMid - sMid
+            
+            int sl = (sMid == 0) ? (int) -1e8 : nums1[sMid - 1]; // smaller[] left side elt of mid
+            int sr = (sMid == n) ? (int) 1e8 : nums1[sMid]; // smaller[] mid 
+            
+            int ll = (lMid == 0) ? (int) -1e8 : nums2[lMid - 1]; // larger[] left side elt of mid
+            int lr = (lMid == m) ? (int) 1e8 : nums2[lMid]; // larger[] mid
+            
+            if(sl > lr) {
+                // means in smaller[] left of mid we are having big elts
+                // and we want the arrays to be sorted(ie. sl < lr) so we have to 
+                // move left in smaller[] and larger[] range will move right side eventually 
+                // in next iteration of while loop using overall mid - smaller[] mid
+                ei = sMid - 1;
+                
+            } else if(ll > sr) {
+                // means larger[] array has big elt than smaller[] so we have to move
+                // right side in smaller[] array so that the smaller[] can accomodate
+                // larger[] left side of mid elts in the range to make them sorted
+                // and this will make larger[] range to move left side
+                si = sMid + 1;
+                
+            } else {
+                // means the elts on left of sl and right on lr are sorted 
+                // and the elts on left of ll and right of sr are sorted
+                int leftBoundaryMax = Math.max(sl, ll); // so get max elt on left side of mid
+                int rightBoundaryMax = Math.min(sr, lr); // get min elt on right side of mid
+                // we want min and max elts bcz in no range the median is calculated in 
+                //middle elts and max on left side and min on right side will give these elts
+                
+                if((n+m) % 2 == 0) return (leftBoundaryMax + rightBoundaryMax) / 2.0;
+                // even no of elts so median is from 2 elts 
+                else return leftBoundaryMax;
+                // odd no. of elts so middle elt is leftBoundaryMax ( max of sl and ll)
+            }
+        }
+        return 0.0; // just for formality 
     }
 
 }
