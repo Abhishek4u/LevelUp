@@ -161,6 +161,14 @@ public class l001_basic {
         return count;
     }
 
+    // Start only 1 time for repeated chars because all will return same res so to avoid we use vis[] in every rec step 
+    // eg : AABB
+    //          ans, ques
+    //      1 -> A , ABB
+    //      2 -> A , ABB (avoid starting this rec as already started in for loop for 1)
+    //      3 -> B , ABB
+    //      4 -> B , ABB (avoid starting this rec)
+    //      
     public static int allPermutation_withoutDuplicates(String ques,String ans) {
         if(ques.length() == 0) {
             System.out.println(ans);
