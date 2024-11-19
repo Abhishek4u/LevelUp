@@ -203,7 +203,11 @@ public class l001 {
 
     int maxPathSum(Node root) {
         // code here
-        maxPathSum_(root);
+        int sum = maxPathSum_(root);
+        // If only 1 child is present then return 1 side answer
+        // ie. sum from root to child
+        if(root.left == null || root.right == null)
+            return Math.max(sum, leafToLeafAns);
         return leafToLeafAns;
     }
 
