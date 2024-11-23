@@ -219,13 +219,13 @@ public class questions {
         
         while(c1.next != null && c2.next != null) {
             
-            c1.next = c2.next;
-            c1 = c1.next;
+            c1.next = c2.next; // connect next odd
+            c1 = c1.next; // move to next odd
             
-            c2.next = c1.next;
-            c2 = c2.next;
+            c2.next = c1.next; // connect next even
+            c2 = c2.next; // move to next even
         }
-        c1.next = eHead;
+        c1.next = eHead; // connect even to odd's tail
         return head;
     }
 
